@@ -1,16 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import reader 
+import functions as fct
 
 # Visualisation de la structure initiale
-nodes, elements = reader.read_data('init_nodes.txt')
-#reader.plot_nodes(nodes, elements)
+nodes, elements = fct.read_data('init_nodes.txt')
+# fct.plot_nodes(nodes, elements)
+# print(fct.euclidian_distance(6, elements, nodes))
 
 # Modification du nombre d'éléments
-# elements = reader.new_nodes(nodes, elements)
-# reader.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
-# nodes, elements = reader.read_data('nodes_2.txt')
-# reader.plot_nodes(nodes, elements)
+# elements = fct.new_nodes(nodes, elements)
+# fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
+# nodes, elements = fct.read_data('nodes_2.txt')
+# fct.plot_nodes(nodes, elements)
 
 # Création de la liste des degrés de liberté
 count = 1

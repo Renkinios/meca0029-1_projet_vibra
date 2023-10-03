@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 def read_data (file_name) : 
     """ Lit le fichier "fichier" contenant la liste des coordonnées des noeuds, et les éléments
@@ -110,3 +111,22 @@ def plot_nodes(nodes, elements) :
     plt.show()
 
 # plot_nodes(nodes, elements)
+
+def euclidian_distance(elem, elements, nodes) : 
+    """ Calcule la longueur de l'élément via la formule de la distance euclidienne
+        Argument : 
+            - elem : scalaire donnant l'index de l'élément dans la liste elements
+            - elements : la liste des éléments
+            - nodes : la liste des coordonnées de chaque noeud
+        Return : 
+            - elem_len : la longueur de l'élément
+    """
+
+    node_1 = elements[elem][0]
+    node_2 = elements[elem][1]
+    coord_1 = nodes[node_1]
+    coord_2 = nodes[node_2]
+
+    elem_len = math.sqrt(((coord_1[0]-coord_2[0])**2)+((coord_1[1]-coord_2[1])**2)+((coord_1[2]-coord_2[2])**2))
+
+    return elem_len

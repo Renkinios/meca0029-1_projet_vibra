@@ -43,7 +43,7 @@ def read_data (file_name) :
 # print("nodes : ", nodes)
 # print("coordonnees :",nodes[elements[30][0]][0])
 
-def new_nodes(matrix, nodes, elements):
+def new_nodes(nodes, elements):
     """ Crée des nouveaux noeuds en divisant chaque éléments en deux 
         Arguments : 
             - matrix : matrice contenant les noeuds initiaux    
@@ -52,20 +52,20 @@ def new_nodes(matrix, nodes, elements):
     """
 
     new_matrix = []
-    for i in range(len(matrix)):
-        x = (nodes[matrix[i][0]][0] + nodes[matrix[i][1]][0])/2
-        y = (nodes[matrix[i][0]][1] + nodes[matrix[i][1]][1])/2
-        z = (nodes[matrix[i][0]][2] + nodes[matrix[i][1]][2])/2
+    for i in range(len(elements)):
+        x = (nodes[elements[i][0]][0] + nodes[elements[i][1]][0])/2
+        y = (nodes[elements[i][0]][1] + nodes[elements[i][1]][1])/2
+        z = (nodes[elements[i][0]][2] + nodes[elements[i][1]][2])/2
         nodes.append([x, y, z])
-        new_element_1 = [matrix[i][0], len(nodes)-1]
-        new_element_2 = [len(nodes)-1, matrix[i][1]]
+        new_element_1 = [elements[i][0], len(nodes)-1]
+        new_element_2 = [len(nodes)-1, elements[i][1]]
         new_matrix.append(new_element_1)
         new_matrix.append(new_element_2)
     return new_matrix
 
 # elements = new_nodes(elements)
 
-def writing_nodes_element_file(nodes,elements):
+def writing_nodes_element_file(nodes,elements, file_name):
     """ Ecrit les nouveaux éléments créés dans un fichier texte
         Arguments : 
             - nodes : liste des noeuds
@@ -74,7 +74,7 @@ def writing_nodes_element_file(nodes,elements):
             - Rien
     """
 
-    with open('new_nodes.txt', 'w') as fichier:
+    with open(file_name, 'w') as fichier:
         fichier.write("Number of nodes " + str(len(nodes)) + " :\n")
         for i in range(len(nodes)):
             fichier.write("\t" + str(i) + " : " + str(nodes[i][0]) + " " + str(nodes[i][1]) + " " + str(nodes[i][2]) + "\n")

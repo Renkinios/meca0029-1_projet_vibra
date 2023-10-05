@@ -130,3 +130,55 @@ def euclidian_distance(elem, elements, nodes) :
     elem_len = math.sqrt(((coord_1[0]-coord_2[0])**2)+((coord_1[1]-coord_2[1])**2)+((coord_1[2]-coord_2[2])**2))
 
     return elem_len
+
+def elem_matrixes(beam_param) : 
+    """ Crée les matrices élémentaires
+        Arguements : 
+            - beam_param : une array contenant les paramètres de la poutre : [A, r, h, E, Iz, Iy, Jx, G]
+        Return : 
+            - M_el : la matrice élémentaire de masse
+            - K_el : la matrice élémentaire d'énergie cinétique
+    """
+    A = beam_param[0]; r = beam_param[1]; h=beam_param[2]; E=beam_param[3]; Iz=beam_param[4]; Iy=beam_param[5]; Jx=beam_param[6]; G=beam_param[7]
+    r = 1
+    a = (11*h)/210
+    b = (13*h)/420
+    c = (h**2)/105
+    d = (r**2)/3
+    e = (h**2)/140
+    M_el = [[  1/3,     0,     0,     0,     0,     0,   1/6,     0,     0,     0,     0,     0], 
+            [    0, 13/35,     0,     0,     0,     a,     0,  9/70,     0,     0,     0,    -b],
+            [    0,     0, 13/35,     0,    -a,     0,     0,     0,  9/70,     0,     b,     0], 
+            [    0,     0,     0,     d,     0,     0,     0,     0,     0,   d/2,     0,     0],
+            [    0,     0,    -b,     0,     c,     0,     0,     0,    -b,     0,    -e,     0], 
+            [    0,     a,     0,     0,     0,     c,     0,     b,     0,     0,     0,    -e],
+            [  1/6,     0,     0,     0,     0,     0,   1/3,     0,     0,     0,     0,     0],
+            [    0,  9/70,     0,     0,     0,     b,     0, 13/35,     0,     0,     0,    -a],
+            [    0,     0,  9/70,     0,    -b,     0,     0,     0, 13/35,     0,     a,     0],
+            [    0,     0,     0,   d/2,     0,     0,     0,     0,     0,     d,     0,     0],
+            [    0,     0,     b,     0,    -e,     0,     0,     0,     a,     0,     c,     0],
+            [    0,    -b,     0,     0,     0,    -e,     0,    -a,     0,     0,     0,     c]]
+    
+    f = (E*A)/h
+    g = (12*E*Iz)/(h**3)
+    i = (6*E*Iz)/(h**2)
+    j = (12*E*Iy)/(h**3)
+    k = (6*E*Iy)/(h**2)
+    m = (G*Jx)/h
+    n = (2*E*Iz)/h
+    o = (2*E*Iy)/h
+    K_el = [[    f,     0,     0,     0,     0,     0,    -f,     0,     0,     0,     0,     0], 
+            [    0,     g,     0,     0,     0,     i,     0,    -g,     0,     0,     0,     i],
+            [    0,     0,     j,     0,    -k,     0,     0,     0,    -j,     0,    -k,     0], 
+            [    0,     0,     0,     m,     0,     0,     0,     0,     0,     m,     0,     0],
+            [    0,     0,    -k,     0,   2*o,     0,     0,     0,     k,     0,     o,     0], 
+            [    0,     i,     0,     0,     0,   2*n,     0,    -i,     0,     0,     0,     n],
+            [   -f,     0,     0,     0,     0,     0,     f,     0,     0,     0,     0,     0],
+            [    0,    -g,     0,     0,     0,    -i,     0,     g,     0,     0,     0,    -i],
+            [    0,     0,    -j,     0,     k,     0,     0,     0,     j,     0,     k,     0],
+            [    0,     0,     0,    -m,     0,     0,     0,     0,     0,     m,     0,     0],
+            [    0,     0,    -k,     0,     o,     0,     0,     0,     k,     0,   2*o,     0],
+            [    0,     i,     0,     0,     0,     n,     0,    -i,     0,     0,     0,   2*n]]
+    
+    return M_el, K_el
+    

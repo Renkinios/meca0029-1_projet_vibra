@@ -40,12 +40,8 @@ def read_data (file_name) :
 
     return nodes, elements
 
-# print("éléments : ", elements)
-# print("nodes : ", nodes)
-# print("coordonnees :",nodes[elements[30][0]][0])
-
-def new_nodes(nodes, elements):
-    """ Crée des nouveaux noeuds en divisant chaque éléments en deux 
+def new_nodes(nodes, elements, leg_elem, rili_elem):
+    """ Crée des nouveaux noeuds en divisant chaque éléments en deux, et ajoute ces éléments aux précédents
         Arguments : 
             - matrix : matrice contenant les noeuds initiaux    
         Return : 
@@ -53,6 +49,9 @@ def new_nodes(nodes, elements):
     """
 
     new_matrix = []
+    new_leg = []
+    new_rili = []
+    count = 0
     for i in range(len(elements)):
         x = (nodes[elements[i][0]][0] + nodes[elements[i][1]][0])/2
         y = (nodes[elements[i][0]][1] + nodes[elements[i][1]][1])/2
@@ -62,9 +61,13 @@ def new_nodes(nodes, elements):
         new_element_2 = [len(nodes)-1, elements[i][1]]
         new_matrix.append(new_element_1)
         new_matrix.append(new_element_2)
-    return new_matrix
-
-# elements = new_nodes(elements)
+        if i in leg_elem : 
+            new_leg.append(new_matrix.index(new_element_1))
+            new_leg.append(new_matrix.index(new_element_2))
+        if i in rili_elem : 
+            new_rili.append(new_matrix.index(new_element_1))
+            new_rili.append(new_matrix.index(new_element_2))
+    return new_matrix, new_leg, new_rili
 
 def writing_nodes_element_file(nodes,elements, file_name):
     """ Ecrit les nouveaux éléments créés dans un fichier texte
@@ -82,8 +85,6 @@ def writing_nodes_element_file(nodes,elements, file_name):
         fichier.write("Number of elements :\n")
         for i in range(len(elements)):
             fichier.write("\t"+ str(i) + " : " + str(elements[i][0]) + " " + str(elements[i][1]) + "\n")
-
-# writing_nodes_element_file(nodes,elements)
 
 def plot_nodes(nodes, elements) : 
     """ Plot la structure avec les noeuds et les éléments
@@ -110,8 +111,6 @@ def plot_nodes(nodes, elements) :
     ax.set_zlim(0,25000)
     plt.show()
 
-# plot_nodes(nodes, elements)
-
 def euclidian_distance(elem, elements, nodes) : 
     """ Calcule la longueur de l'élément via la formule de la distance euclidienne
         Argument : 
@@ -131,7 +130,7 @@ def euclidian_distance(elem, elements, nodes) :
 
     return elem_len
 
-def elem_matrixes(beam_param) : 
+def elem_matrix(beam_param) : 
     """ Crée les matrices élémentaires
         Arguements : 
             - beam_param : une array contenant les paramètres de la poutre : [A, r, h, E, Iz, Iy, Jx, G]

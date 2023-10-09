@@ -8,11 +8,17 @@ nodes, elements = fct.read_data('init_nodes.txt')
 fct.plot_nodes(nodes, elements)
 # print(fct.euclidian_distance(6, elements, nodes))
 
+# Création des listes initiales de catégorie (leg ou rigid link (rili))
+leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
+rili_elem = [56,57,58,59,60]
+
 # Modification du nombre d'éléments
-# elements = fct.new_nodes(nodes, elements)
-# fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
+elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
+fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
 # nodes, elements = fct.read_data('nodes_2.txt')
-# fct.plot_nodes(nodes, elements)
+fct.plot_nodes(nodes, elements)
+print(rili_elem)
+
 
 # Création de la liste des degrés de liberté
 count = 1
@@ -64,8 +70,7 @@ A_r = A_leg*1e-2    # Section [m^2]
 Iyz_r = Iyz_leg*1e4 # Moment quadratique selon l'axe y et z [m^4]
 Jx_r = Jx_leg*1e4   # Moment d'intertie selon l'axe x [kg.m^2]
 
-# Création des matrices élémentaires pour une poutre secondaire 
-#param_leg = [A_leg, r, h, E, Iz, Iy, Jx_leg, G]
+
 
 
 

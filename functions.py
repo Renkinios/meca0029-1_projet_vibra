@@ -157,7 +157,9 @@ def elem_matrix(beam_param) :
             [    0,     0,     0,   d/2,     0,     0,     0,     0,     0,     d,     0,     0],
             [    0,     0,     b,     0,    -e,     0,     0,     0,     a,     0,     c,     0],
             [    0,    -b,     0,     0,     0,    -e,     0,    -a,     0,     0,     0,     c]]
-    M_el = M_el*rho*A*h
+    for i in range(12) : 
+        for j in range(12) : 
+            M_el[i][j] = M_el[i][j]*rho*A*h
 
     f = (E*A)/h
     g = (12*E*Iz)/(h**3)

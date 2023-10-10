@@ -5,7 +5,7 @@ import math
 
 # Visualisation de la structure initiale
 nodes, elements = fct.read_data('init_nodes.txt')
-fct.plot_nodes(nodes, elements)
+#fct.plot_nodes(nodes, elements)
 # print(fct.euclidian_distance(6, elements, nodes))
 
 # Création des listes initiales de catégorie (leg ou rigid link (rili))
@@ -13,17 +13,17 @@ leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
 rili_elem = [56,57,58,59,60]
 
 # Modification du nombre d'éléments
-elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
-fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
+#elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
+#fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
 # nodes, elements = fct.read_data('nodes_2.txt')
-fct.plot_nodes(nodes, elements)
-print(rili_elem)
+#fct.plot_nodes(nodes, elements)
+#print(rili_elem)
 
 
 # Création de la liste des degrés de liberté
 count = 1
 dof_list = []
-for i in range(len(nodes)) : 
+for e in range(len(nodes)) : 
     dof_elem = [count, count+1, count+2, count+3, count+4, count+5]
     dof_list.append(dof_elem)
     count+=6
@@ -31,24 +31,76 @@ for i in range(len(nodes)) :
 
 # Création de la matrice locel (reprenant les dof impliqués pour chaque élément)
 locel = []
-for i in range(len(elements)) :    
-    locel.append([dof_list[elements[i][0]][0], dof_list[elements[i][0]][1], 
-                  dof_list[elements[i][0]][2], dof_list[elements[i][0]][3], 
-                  dof_list[elements[i][0]][4], dof_list[elements[i][0]][5],
-                  dof_list[elements[i][1]][0], dof_list[elements[i][1]][1], 
-                  dof_list[elements[i][1]][2], dof_list[elements[i][1]][3], 
-                  dof_list[elements[i][1]][4], dof_list[elements[i][1]][5]])
+for e in range(len(elements)) :    
+    locel.append([dof_list[elements[e][0]][0], dof_list[elements[e][0]][1], 
+                  dof_list[elements[e][0]][2], dof_list[elements[e][0]][3], 
+                  dof_list[elements[e][0]][4], dof_list[elements[e][0]][5],
+                  dof_list[elements[e][1]][0], dof_list[elements[e][1]][1], 
+                  dof_list[elements[e][1]][2], dof_list[elements[e][1]][3], 
+                  dof_list[elements[e][1]][4], dof_list[elements[e][1]][5]])
 
-
+# print("\n")
+# print(len(locel), "\n")
+# print(len(locel[0]), "\n")
+# print(locel)
 # Création des matrices élémentaires, rotation et assemblage
-#boucle sur tous les éléments
-for i in range(len(elements)) : 
-    #création des matries élémentaires
-    param = fct.get_param(i, leg_elem, rili_elem, elements, nodes)
-    M_el,K_el = fct.elem_matrix(param)
+size = len(elements)
+K = [] #np.zeros((size, size))
+M = [] #np.zeros((size, size))
+# boucle sur tous les éléments
+for e in range(len(elements)) : 
+    # création des matries élémentaires
+    param = fct.get_param(e, leg_elem, rili_elem, elements, nodes)
+    M_el, K_el = fct.elem_matrix(param)
+
     #création de l'opérateur de rotation
+    node_1 = elements[e][0]
+    node_2 = elements[e][1]
+    elem_len = fct.euclidian_distance(e, elements, nodes)
+    dir_x = [(nodes[node_2][0]-nodes[node_1][0])/elem_len, (nodes[node_2][1]-nodes[node_1][1])/elem_len, (nodes[node_2][2]-nodes[node_1][2])/elem_len]
+    dir_2 = [0.0, 0.0, 0.0] # TODO
+    dir_3 = [(nodes[node_2][0]-nodes[node_1][0]), (nodes[node_2][1]-nodes[node_1][1]), (nodes[node_2][2]-nodes[node_1][2])]
+    dir_y = np.cross(dir_2, dir_3)/np.linalg.norm(np.cross(dir_2, dir_3))
+    dir_z = np.cross(dir_x, dir_y)
+    dir_X = [1.0, 0.0, 0.0]
+    dir_Y = [0.0, 1.0, 0.0]
+    dir_Z = [0.0, 0.0, 1.0]
+    print(dir_y)
+    
+    T = [[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+         [np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+         [np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z), 0.0, 0.0, 0.0], 
+         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)], 
+         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)], 
+         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
+    
     # application de la rotation
-    # assemblage dans la matrice globale
+    k_eS = np.matmul(np.transpose(T), K_el)
+    m_eS = np.matmul(np.transpose(T), M_el)
+    K_eS = np.matmul(k_eS, T)
+    M_eS = np.matmul(m_eS, T)
+
+    # assemblage dans la matrice globale # TODO
+    locel_loc = locel[e]
+    print(locel_loc)
+    print(len(M))
+    for i in range(12) : 
+        for j in range(12) : 
+            ii = locel_loc[i]
+            jj = locel_loc[j]
+            print(ii)
+            print(jj)
+            K[ii][jj] += K_eS[i][j]
+            M[ii][jj] += M_eS[i][j]
+    # K[locel[e:]][locel[e:]] = K[locel[e:]][locel[e:]] + K_eS
+    # M[locel[e:]][locel[e:]] = M[locel[e:]][locel[e:]] + M_eS
 
 
 
+print(K)

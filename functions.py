@@ -220,11 +220,12 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         param = [A_leg, (1.0 + (1-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
     if elem in rili_elem : 
         # Définition des constantes pour les rigid links
+        m_leg = rho*math.pi*h*(1**2 - (1-0.02)**2) 
         rho_r = rho*1e-4    # Densité [kg/m^3]
         E_r = E*1e4         # Module de Young [Pa]
         A_r = A_leg*1e-2    # Section [m^2]
-        Iyz_r = Iyz_leg*1e4 # Moment quadratique selon l'axe y et z [m^4]
-        Jx_r = Jx_leg*1e4   # Moment d'intertie selon l'axe x [kg.m^2]
+        Iyz_r = ((math.pi/4)*(1**4 - (1-0.02)**2))*1e4 # Moment quadratique selon l'axe y et z [m^4]
+        Jx_r = (0.5*m_leg*(1**2 + (1-0.02)**2))*1e4   # Moment d'intertie selon l'axe x [kg.m^2]
         G_r = E_r/(2*(1+nu))# Module de cisaillement [Pa]
         r = math.sqrt(A_r/math.pi) # A VERIFIER
 

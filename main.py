@@ -3,24 +3,21 @@ import matplotlib.pyplot as plt
 import functions as fct
 import math
 
-# Visualisation de la structure initiale
+# VISUALISATION DE LA STRUCTURE INITIALE
 nodes, elements = fct.read_data('init_nodes.txt')
-#fct.plot_nodes(nodes, elements)
-# print(fct.euclidian_distance(6, elements, nodes))
+# fct.plot_nodes(nodes, elements)
 
-# Création des listes initiales de catégorie (leg ou rigid link (rili))
+# CREATION DES LISTES INITIALES DE CATEGORIE (leg ou rigid link (rili))
 leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
 rili_elem = [56,57,58,59,60]
 
-# Modification du nombre d'éléments
+# MODIFICATION DU NOMBRE D'ELEMENTS
 elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
 fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
 # nodes, elements = fct.read_data('nodes_2.txt')
-#fct.plot_nodes(nodes, elements)
-#print(rili_elem)
+# fct.plot_nodes(nodes, elements)
 
-
-# Création de la liste des degrés de liberté
+# CREATION DE LA LISTE DES DEGRES DE LIBERTE
 count = 1
 dof_list = []
 for e in range(len(nodes)) : 
@@ -28,8 +25,7 @@ for e in range(len(nodes)) :
     dof_list.append(dof_elem)
     count+=6
 
-
-# Création de la matrice locel (reprenant les dof impliqués pour chaque élément)
+# CREATION DE LA MATRICE LOCEL (reprenant les dof impliqués pour chaque élément)
 locel = []
 for e in range(len(elements)) :    
     locel.append([dof_list[elements[e][0]][0], dof_list[elements[e][0]][1], 
@@ -41,19 +37,19 @@ for e in range(len(elements)) :
 
 
 
-# Création des matrices élémentaires, rotation et assemblage
+# CREATION DES MATRICES ELEMENTAIRES, ROTATION ET ASSEMBLAGE
 size = dof_list[len(dof_list)-1][5]
 print(size)
 K = np.zeros((size, size))
 M = np.zeros((size, size))
 
-# boucle sur tous les éléments
+# Boucle sur tous les éléments
 for e in range(len(elements)) : 
-    # création des matries élémentaires
+    # Création des matries élémentaires
     param = fct.get_param(e, leg_elem, rili_elem, elements, nodes)
     M_el, K_el = fct.elem_matrix(param)
 
-    #création de l'opérateur de rotation
+    # Création de l'opérateur de rotation
     node_1 = nodes[elements[e][0]]
     node_2 = nodes[elements[e][1]]
     node_3 = [5000.0, 5000.0, 5000.0]
@@ -93,24 +89,25 @@ for e in range(len(elements)) :
          [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)], 
          [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
     
-    # application de la rotation
+    # Application de la rotation
     k_eS = np.matmul(np.transpose(T), K_el)
     m_eS = np.matmul(np.transpose(T), M_el)
     K_eS = np.matmul(k_eS, T)
     M_eS = np.matmul(m_eS, T)
 
-    # assemblage dans la matrice globale 
+    # Assemblage dans la matrice globale 
     locel_loc = locel[e]
-    # print(locel_loc)
-    # print(len(M))
     for i in range(12) : 
         for j in range(12) : 
             ii = locel_loc[i]-1
             jj = locel_loc[j]-1
-            # print(ii)
-            # print(jj)
             K[ii][jj] += K_eS[i][j]
             M[ii][jj] += M_eS[i][j]
-    # # K[locel[e:]][locel[e:]] = K[locel[e:]][locel[e:]] + K_eS
-    # # M[locel[e:]][locel[e:]] = M[locel[e:]][locel[e:]] + M_eS
-print(K)
+
+# APPLICATION DES CONTRAINTES 
+for d in range(24) : 
+    M = np.delete(M, (23-d), axis=0)
+    M = np.delete(M, (23-d), axis=1)
+    K = np.delete(K, (23-d), axis=0)
+    K = np.delete(K, (23-d), axis=1)
+

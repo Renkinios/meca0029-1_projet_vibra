@@ -210,7 +210,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
     param = []
 
     if elem in leg_elem : 
-        # Définition des caractéristiques pour une pour principale (elon les axes locaux)
+      # Définition des caractéristiques pour une pour principale (elon les axes locaux)
         m_leg = rho*math.pi*h*(1**2 - (1-0.02)**2)                  # Masse d'une poutre principale [kg]
         Iyz_leg = (math.pi/4)*(1**4 - (1-0.02)**2)                  # Moment quadratique selon l'axe y et z [m^4]
         Ix_leg = (math.pi/2)*(1**4 - (1-0.02)**2)                   # Moment quadratique selon l'axe x [m^4]
@@ -219,20 +219,20 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
 
         param = [A_leg, (1.0 + (1-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
     if elem in rili_elem : 
-        # Définition des constantes pour les rigid links
+      # Définition des constantes pour les rigid links
         m_leg = rho*math.pi*h*(1**2 - (1-0.02)**2) 
-        rho_r = rho*1e-4    # Densité [kg/m^3]
-        E_r = E*1e4         # Module de Young [Pa]
-        A_r = A_leg*1e-2    # Section [m^2]
+        rho_r = rho*1e-4                               # Densité [kg/m^3]
+        E_r = E*1e4                                    # Module de Young [Pa]
+        A_r = A_leg*1e-2                               # Section [m^2]
         Iyz_r = ((math.pi/4)*(1**4 - (1-0.02)**2))*1e4 # Moment quadratique selon l'axe y et z [m^4]
-        Jx_r = (0.5*m_leg*(1**2 + (1-0.02)**2))*1e4   # Moment d'intertie selon l'axe x [kg.m^2]
-        G_r = E_r/(2*(1+nu))# Module de cisaillement [Pa]
+        Jx_r = (0.5*m_leg*(1**2 + (1-0.02)**2))*1e4    # Moment d'intertie selon l'axe x [kg.m^2]
+        G_r = E_r/(2*(1+nu))                           # Module de cisaillement [Pa]
         r = math.sqrt(A_r/math.pi) # A VERIFIER
 
         param = [A_r, r, h, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
 
     else : 
-        # Définition des caractéristiques pour une poutre secondaire (selon les axes locaux)
+      # Définition des caractéristiques pour une poutre secondaire (selon les axes locaux)
         m_beam = rho*math.pi*h*(0.6**2 - (0.6-0.02**2))                    # Masse [kg]
         Iyz_beam = (math.pi/4)*(0.6**4 - (0.6-0.02)**2)                    # Moment quadratique selon l'axe y et z [m^4]
         Ix_beam = (math.pi/2)*(0.6**4 - (0.6-0.02)**2)                     # Moment quadratique selon l'axe x [m^4]

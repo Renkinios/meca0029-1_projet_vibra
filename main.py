@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import functions as fct
 import math
+from scipy import linalg
+
 
 # VISUALISATION DE LA STRUCTURE INITIALE
 nodes, elements = fct.read_data('init_nodes.txt')
@@ -39,7 +41,6 @@ for e in range(len(elements)) :
 
 # CREATION DES MATRICES ELEMENTAIRES, ROTATION ET ASSEMBLAGE
 size = dof_list[len(dof_list)-1][5]
-print(size)
 K = np.zeros((size, size))
 M = np.zeros((size, size))
 
@@ -64,7 +65,6 @@ for e in range(len(elements)) :
     for y in range(3) : 
         dir_y[y] = dir_y[y]/norme
     dir_z = np.cross(dir_x, dir_y)
-
     dir_X = [1.0, 0.0, 0.0]
     dir_Y = [0.0, 1.0, 0.0]
     dir_Z = [0.0, 0.0, 1.0]
@@ -100,14 +100,25 @@ for e in range(len(elements)) :
     for i in range(12) : 
         for j in range(12) : 
             ii = locel_loc[i]-1
-            jj = locel_loc[j]-1
+            jj = locel_loc[j]-1 # ? 
             K[ii][jj] += K_eS[i][j]
             M[ii][jj] += M_eS[i][j]
-
 # APPLICATION DES CONTRAINTES 
+print(np.sum(M - np.transpose(M)))
 for d in range(24) : 
     M = np.delete(M, (23-d), axis=0)
     M = np.delete(M, (23-d), axis=1)
     K = np.delete(K, (23-d), axis=0)
     K = np.delete(K, (23-d), axis=1)
 
+# numerical solution of K q= w^2 M q  juste K/M = w^2
+# page 351 juste selectionner les n premiers modes 
+#deja mis mm et EA/l ? 
+
+eigenvals, eigenvects = linalg.eigh(K,M)
+eigenvals = np.sort(eigenvals)
+
+eigenvals = eigenvals[-8:]
+w = np.sqrt(eigenvals)
+f = w/(2*math.pi)
+print(f)

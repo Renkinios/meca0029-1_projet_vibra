@@ -86,30 +86,6 @@ def writing_nodes_element_file(nodes,elements, file_name):
         for i in range(len(elements)):
             fichier.write("\t"+ str(i) + " : " + str(elements[i][0]) + " " + str(elements[i][1]) + "\n")
 
-def plot_nodes(nodes, elements) : 
-    """ Plot la structure avec les noeuds et les éléments
-        Arguments : 
-            - noeud : liste des noeuds
-            - elements : liste des éléments
-        Return : 
-            - Rien
-    """
-
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    for i in elements:
-        x = [nodes[i[0]][0], nodes[i[1]][0]]
-        y = [nodes[i[0]][1], nodes[i[1]][1]]
-        z = [nodes[i[0]][2], nodes[i[1]][2]]
-        ax.plot(x, y, z, 'b-')
-    for node in nodes:
-        ax.plot(node[0], node[1], node[2], 'ro')
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-    ax.set_title('Maillage de droites en 3D')
-    ax.set_zlim(0,25000)
-    plt.show()
 
 def euclidian_distance(elem, elements, nodes) : 
     """ Calcule la longueur de l'élément via la formule de la distance euclidienne

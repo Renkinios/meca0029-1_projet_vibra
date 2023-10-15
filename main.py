@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import functions as fct
 import math
 from scipy import linalg
-
+from scipy.linalg import eigh
 
 # VISUALISATION DE LA STRUCTURE INITIALE
 nodes, elements = fct.read_data('init_nodes.txt')
@@ -121,4 +121,6 @@ eigenvals = np.sort(eigenvals)
 eigenvals = eigenvals[-8:]
 w = np.sqrt(eigenvals)
 f = w/(2*math.pi)
-print(f)
+# D, V = eigh(K, M, 8) 
+# print(f)
+# print("Fréquences propres (rad/s) :", D)  

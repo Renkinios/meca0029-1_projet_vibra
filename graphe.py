@@ -116,12 +116,12 @@ def plot_nodes(nodes, elements,fichier) :
             x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
             y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
             z = [nodes[i[0]][2]/1000, nodes[i[1]][2]/1000]
-            ax.plot(x, y, z,color="red")
-        elif j in [56,57,58,59,60] : 
-            x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
-            y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
-            z = [nodes[i[0]][2]/1000, nodes[i[1]][2]/1000]
-            ax.plot(x, y, z,color="green")
+            ax.plot(x, y, z,color="blue")
+        # elif j in [56,57,58,59,60] : 
+        #     x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
+        #     y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
+        #     z = [nodes[i[0]][2]/1000, nodes[i[1]][2]/1000]
+        #     ax.plot(x, y, z,color="green")
             # ax.scatter(nodes[21][0]/1000, nodes[21][1]/1000, nodes[21][2]/1000,color='green', marker='o')
         else :
             x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
@@ -130,7 +130,7 @@ def plot_nodes(nodes, elements,fichier) :
             ax.plot(x, y, z,color="blue")
         j += 1
     for node in nodes:
-        ax.plot(node[0]/1000, node[1]/1000, node[2]/1000, 'peru', marker='o', markersize = 4)
+        ax.plot(node[0]/1000, node[1]/1000, node[2]/1000, 'peru', marker='o', markersize = 2)
 
     ax.set_xlabel('X-axis [m]')
     ax.set_ylabel('Y-axis [m]')
@@ -143,5 +143,5 @@ def plot_nodes(nodes, elements,fichier) :
     ax.w_zaxis.pane.fill = False
     # ax.set_zlim(0, 25)  
     plt.savefig(fichier,bbox_inches='tight',dpi=600,format='pdf')
-# plot_nodes(nodes_2, elements_2,"picture/node_turbine_2.pdf") 
+plot_nodes(nodes_2, elements_2,"picture/node_turbine_2.pdf") 
 plot_nodes(nodes, elements,"picture/node_turbine_1.pdf")

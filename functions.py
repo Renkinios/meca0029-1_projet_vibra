@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import math
 
 def read_data (file_name) : 
-    """ Lit le fichier "fichier" contenant la liste des coordonnées des noeuds, et les éléments
+    """ Lit le fichier "fichier" contenant la liste des coordonnees des noeuds, et les elements
         Arguments : 
             - fichier : nom du fichier texte
         Return : 
-            - nodes : la liste des coordonnées des noeuds 
-            - elements : la liste des éléments
+            - nodes : la liste des coordonnees des noeuds 
+            - elements : la liste des elements
     """
 
     # Initialiser les listes
@@ -19,13 +19,13 @@ def read_data (file_name) :
     with open(file_name, 'r') as file:
         lines = file.readlines()
 
-    # Ignorer la première ligne (Number of nodes)
+    # Ignorer la premiere ligne (Number of nodes)
     lines = lines[1:]
     cumpt = 0 
 
-    # Parcourir les lignes restantes et insérer les coordonnées dans la nodes
+    # Parcourir les lignes restantes et inserer les coordonnees dans la nodes
     for line in lines:
-        # Séparer la ligne en tokens en utilisant l'espace comme délimiteur
+        # Separer la ligne en tokens en utilisant l'espace comme delimiteur
         if("Number of elements :\n" == line):
             break
         tokens = line.split()
@@ -33,7 +33,7 @@ def read_data (file_name) :
         coordonnees = [float(tokens[2]), float(tokens[3]), float(tokens[4])]
         nodes.append(coordonnees)
     for line in range(cumpt+1, len(lines)):
-        # Séparer la ligne en tokens en utilisant l'espace comme délimiteur
+        # Separer la ligne en tokens en utilisant l'espace comme delimiteur
         tokens = lines[line].split()
         elem_nodes = [int(tokens[2]), int(tokens[3])]
         elements.append(elem_nodes)
@@ -41,7 +41,7 @@ def read_data (file_name) :
     return nodes, elements
 
 def new_nodes(nodes, elements, leg_elem, rili_elem):
-    """ Crée des nouveaux noeuds en divisant chaque éléments en deux, et ajoute ces éléments aux précédents
+    """ Cree des nouveaux noeuds en divisant chaque elements en deux, et ajoute ces elements aux precedents
         Arguments : 
             - matrix : matrice contenant les noeuds initiaux    
         Return : 
@@ -70,10 +70,10 @@ def new_nodes(nodes, elements, leg_elem, rili_elem):
     return new_matrix, new_leg, new_rili
 
 def writing_nodes_element_file(nodes,elements, file_name):
-    """ Ecrit les nouveaux éléments créés dans un fichier texte
+    """ Ecrit les nouveaux elements cres dans un fichier texte
         Arguments : 
             - nodes : liste des noeuds
-            - elements : liste des éléments 
+            - elements : liste des elements 
         Return : 
             - Rien
     """
@@ -88,13 +88,13 @@ def writing_nodes_element_file(nodes,elements, file_name):
 
 
 def euclidian_distance(elem, elements, nodes) : 
-    """ Calcule la longueur de l'élément via la formule de la distance euclidienne
+    """ Calcule la longueur de l'element via la formule de la distance euclidienne
         Argument : 
-            - elem : scalaire donnant l'index de l'élément dans la liste elements
-            - elements : la liste des éléments
-            - nodes : la liste des coordonnées de chaque noeud
+            - elem : scalaire donnant l'index de l'element dans la liste elements
+            - elements : la liste des elements
+            - nodes : la liste des coordonnees de chaque noeud
         Return : 
-            - elem_len : la longueur de l'élément
+            - elem_len : la longueur de l'element
     """
 
     node_1 = elements[elem][0]
@@ -107,12 +107,12 @@ def euclidian_distance(elem, elements, nodes) :
     return elem_len
 
 def elem_matrix(beam_param) : 
-    """ Crée les matrices élémentaires
+    """ Cree les matrices elementaires
         Arguements : 
-            - beam_param : une array contenant les paramètres de la poutre : [A, r, h, E, Iz, Iy, Jx, G, rho]
+            - beam_param : une array contenant les parametres de la poutre : [A, r, h, E, Iz, Iy, Jx, G, rho]
         Return : 
-            - M_el : la matrice élémentaire de masse
-            - K_el : la matrice élémentaire d'énergie cinétique
+            - M_el : la matrice elementaire de masse
+            - K_el : la matrice elementaire d'energie cinetique
     """
     A = beam_param[0]; r = beam_param[1]; h=beam_param[2]; E=beam_param[3]; Iz=beam_param[4]; Iy=beam_param[5]; Jx=beam_param[6]; G=beam_param[7]; rho=beam_param[8]
     #r = 1
@@ -125,7 +125,7 @@ def elem_matrix(beam_param) :
             [    0, 13/35,     0,     0,     0,     a,     0,  9/70,     0,     0,     0,    -b],
             [    0,     0, 13/35,     0,    -a,     0,     0,     0,  9/70,     0,     b,     0], 
             [    0,     0,     0,     d,     0,     0,     0,     0,     0,   d/2,     0,     0],
-            [    0,     0,    -b,     0,     c,     0,     0,     0,    -b,     0,    -e,     0], 
+            [    0,     0,    -a,     0,     c,     0,     0,     0,    -b,     0,    -e,     0], 
             [    0,     a,     0,     0,     0,     c,     0,     b,     0,     0,     0,    -e],
             [  1/6,     0,     0,     0,     0,     0,   1/3,     0,     0,     0,     0,     0],
             [    0,  9/70,     0,     0,     0,     b,     0, 13/35,     0,     0,     0,    -a],
@@ -148,7 +148,7 @@ def elem_matrix(beam_param) :
     K_el = [[    f,     0,     0,     0,     0,     0,    -f,     0,     0,     0,     0,     0], 
             [    0,     g,     0,     0,     0,     i,     0,    -g,     0,     0,     0,     i],
             [    0,     0,     j,     0,    -k,     0,     0,     0,    -j,     0,    -k,     0], 
-            [    0,     0,     0,     m,     0,     0,     0,     0,     0,     m,     0,     0],
+            [    0,     0,     0,     m,     0,     0,     0,     0,     0,    -m,     0,     0],
             [    0,     0,    -k,     0,   2*o,     0,     0,     0,     k,     0,     o,     0], 
             [    0,     i,     0,     0,     0,   2*n,     0,    -i,     0,     0,     0,     n],
             [   -f,     0,     0,     0,     0,     0,     f,     0,     0,     0,     0,     0],
@@ -162,23 +162,23 @@ def elem_matrix(beam_param) :
     return M_el, K_el
     
 def get_param(elem, leg_elem, rili_elem, elements, nodes) : 
-    """ Crée la liste des paramètres en fonction de la catégorie de l'élément (leg, rigid link or beam)
+    """ Cree la liste des parametres en fonction de la categorie de l'element (leg, rigid link or beam)
         Arguments : 
-            - elem : l'index de l'éléments concerné
-            - leg_elem : la liste d'index des éléments appartenants aux legs
-            - rili_elem : la liste d'index des éléments appartenants aux rigid links
-            - elements : la liste ldes éléments
+            - elem : l'index de l'elements concerne
+            - leg_elem : la liste d'index des elements appartenants aux legs
+            - rili_elem : la liste d'index des elements appartenants aux rigid links
+            - elements : la liste ldes elements
             - nodes : la liste des noeuds
         Return : 
-            - param : la liste des paramètres de l'élément : [A, r, h, E, Iz, Iy, Jx, G, rho]
+            - param : la liste des parametres de l'element : [A, r, h, E, Iz, Iy, Jx, G, rho]
     """
 
-    # Définition des constantes pour la structure
+    # Definition des constantes pour la structure
     E = 210e6                                           # Module de Young [Pa]
     A_leg = math.pi*(1 - (1-0.02)**2)                   # Section d'une poutre principale [m^2]
-    A_beam = math.pi*(0.6**2 - (0.6-0.02)**2)           # Section d'une poutre secondaire [m¨2]
+    A_beam = math.pi*(0.6**2 - (0.6-0.02)**2)           # Section d'une poutre secondaire [m^2]
     nu = 0.3                                            # Coefficient de Poisson [-]
-    rho = 7800                                          # Densité de l'acier utilisé [kg/m^3]
+    rho = 7800                                          # Densite de l'acier utilise [kg/m^3]
     G = E/(2*(1+nu))                                    # Module de cisaillement [Pa]
     h = euclidian_distance(elem, elements,nodes)
     h = h*1e-3
@@ -186,7 +186,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
     param = []
 
     if elem in leg_elem : 
-      # Définition des caractéristiques pour une pour principale (elon les axes locaux)
+      # Definition des caracteristiques pour une pour principale (elon les axes locaux)
         m_leg = rho*math.pi*h*(1**2 - (1-0.02)**2)                  # Masse d'une poutre principale [kg]
         Iyz_leg = (math.pi/4)*(1**4 - (1-0.02)**2)                  # Moment quadratique selon l'axe y et z [m^4]
         Ix_leg = (math.pi/2)*(1**4 - (1-0.02)**2)                   # Moment quadratique selon l'axe x [m^4]
@@ -195,9 +195,9 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
 
         param = [A_leg, (1.0 + (1-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
     if elem in rili_elem : 
-      # Définition des constantes pour les rigid links
+      # Definition des constantes pour les rigid links
         m_leg = rho*math.pi*h*(1**2 - (1-0.02)**2) 
-        rho_r = rho*1e-4                               # Densité [kg/m^3]
+        rho_r = rho*1e-4                               # Densite [kg/m^3]
         E_r = E*1e4                                    # Module de Young [Pa]
         A_r = A_leg*1e-2                               # Section [m^2]
         Iyz_r = ((math.pi/4)*(1**4 - (1-0.02)**2))*1e4 # Moment quadratique selon l'axe y et z [m^4]
@@ -208,7 +208,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         param = [A_r, r, h, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
 
     else : 
-      # Définition des caractéristiques pour une poutre secondaire (selon les axes locaux)
+      # Definition des caracteristiques pour une poutre secondaire (selon les axes locaux)
         m_beam = rho*math.pi*h*(0.6**2 - (0.6-0.02**2))                    # Masse [kg]
         Iyz_beam = (math.pi/4)*(0.6**4 - (0.6-0.02)**2)                    # Moment quadratique selon l'axe y et z [m^4]
         Ix_beam = (math.pi/2)*(0.6**4 - (0.6-0.02)**2)                     # Moment quadratique selon l'axe x [m^4]

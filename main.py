@@ -125,6 +125,7 @@ eigenvals = np.sort(eigenvals)
 eigenvals = eigenvals[-8:]
 w = np.sqrt(eigenvals)
 f = w/(2*math.pi)
-D, V = eigh(K, M, 8) 
+# D, V = eigh(K, M, 8) 
 print(f)
-print("Frequences propres (rad/s) :", D)  
+# print("Fréquences propres (rad/s) :", D) 
+# remet les valeur a 0 pour eigenvals

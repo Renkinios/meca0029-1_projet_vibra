@@ -36,6 +36,7 @@ for e in range(len(elements)) :
                   dof_list[elements[e][1]][0], dof_list[elements[e][1]][1], 
                   dof_list[elements[e][1]][2], dof_list[elements[e][1]][3], 
                   dof_list[elements[e][1]][4], dof_list[elements[e][1]][5]])
+damm = np.array(locel)
 
 
 
@@ -104,7 +105,7 @@ for e in range(len(elements)) :
             K[ii][jj] += K_eS[i][j]
             M[ii][jj] += M_eS[i][j]
 # APPLICATION DES CONTRAINTES 
-print(np.sum(M - np.transpose(M)))
+# print(np.sum(M - np.transpose(M)))
 for d in range(24) : 
     M = np.delete(M, (23-d), axis=0)
     M = np.delete(M, (23-d), axis=1)
@@ -122,5 +123,6 @@ eigenvals = eigenvals[-8:]
 w = np.sqrt(eigenvals)
 f = w/(2*math.pi)
 # D, V = eigh(K, M, 8) 
-# print(f)
-# print("Fréquences propres (rad/s) :", D)  
+print(f)
+# print("Fréquences propres (rad/s) :", D) 
+# remet les valeur a 0 pour eigenvals

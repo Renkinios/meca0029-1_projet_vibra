@@ -6,19 +6,19 @@ from scipy import linalg
 from scipy.linalg import eigh
 
 # VISUALISATION DE LA STRUCTURE INITIALE
-nodes, elements = fct.read_data('init_nodes.txt')
+nodes, elements = fct.read_data('Data/init_nodes.txt')
 # fct.plot_nodes(nodes, elements)
 
 # CREATION DES LISTES INITIALES DE CATEGORIE (leg ou rigid link (rili))
 leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
 rili_elem = [56,57,58,59,60]
-print(fct.euclidian_distance(4, elements, nodes))
-print(fct.euclidian_distance(27, elements, nodes))
+# print(fct.euclidian_distance(4, elements, nodes))
+# print(fct.euclidian_distance(27, elements, nodes))
 
 # MODIFICATION DU NOMBRE D'ELEMENTS
 # elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
-# fct.writing_nodes_element_file(nodes, elements, 'nodes_2.txt')
-# nodes, elements = fct.read_data('nodes_2.txt')
+# fct.writing_nodes_element_file(nodes, elements, 'Data/nodes_2.txt')
+# nodes, elements = fct.read_data('Data/nodes_2.txt')
 # fct.plot_nodes(nodes, elements)
 
 # CREATION DE LA LISTE DES DEGRES DE LIBERTE
@@ -53,9 +53,9 @@ for e in range(len(elements)) :
     M_el, K_el = fct.elem_matrix(param)
 
     # Creation de l'operateur de rotation
-    node_1 = nodes[elements[e][0]]
+    node_1 = nodes[elements[e][0]] # mm
     node_2 = nodes[elements[e][1]]
-    node_3 = [-1000.0, 0.0, -1000.0]
+    node_3 = [-1000.0, 0.0, -1000.0] # pas colineaire
 
     d_2 = [node_2[0]-node_1[0], node_2[1]-node_1[1], node_2[2]-node_1[2]]
     d_3 = [node_3[0]-node_1[0], node_3[1]-node_1[1], node_3[2]-node_1[2]]
@@ -81,7 +81,6 @@ for e in range(len(elements)) :
          [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)], 
          [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)], 
          [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
-
     # Application de la rotation
     k_eS = np.matmul(np.transpose(T), K_el)
     m_eS = np.matmul(np.transpose(T), M_el)
@@ -96,17 +95,17 @@ for e in range(len(elements)) :
             jj = locel_loc[j]-1 # ? 
             K[ii][jj] += K_eS[i][j]
             M[ii][jj] += M_eS[i][j]
-
-
 # AJOUT DE LA MASSE PONCTUELLE 
-mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6])
+mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6]) #sur le dernier noeud de la jambe
 dof_rotor = dof_list[21]
 for m in range(6) : 
     for n in range(6) : 
         mm = dof_rotor[m]-1
         nn = dof_rotor[n]-1
         M[mm][nn] += mass[m][n]
-
+#mode rigide masse, translation rotasion, terre , length 6 mode rigif 2.94 *10^5
+# print(np.sum(M - M.T))
+# print(np.sum(K - K.T))
 
 # APPLICATION DES CONTRAINTES 
 for d in range(24) : 
@@ -121,11 +120,9 @@ for d in range(24) :
 
 eigenvals, eigenvects = linalg.eigh(K,M)
 eigenvals = np.sort(eigenvals)
-
 eigenvals = eigenvals[-8:]
 w = np.sqrt(eigenvals)
 f = w/(2*math.pi)
 # D, V = eigh(K, M, 8) 
-print(f)
-# print("Fréquences propres (rad/s) :", D) 
+print("Fréquences propres (hz) :", f) 
 # remet les valeur a 0 pour eigenvals

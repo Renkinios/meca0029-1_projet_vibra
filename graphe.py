@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import functions  as fct
-
-nodes, elements = fct.read_data('init_nodes.txt')
-nodes_2, elements_2 = fct.read_data('nodes_2.txt')
+import numpy as np
+nodes, elements = fct.read_data('Data/init_nodes.txt')
+nodes_2, elements_2 = fct.read_data('Data/nodes_2.txt')
 def plot_wind_turbine(nodes, elements) : 
     """ Plot la structure avec les noeuds et les éléments
         Arguments : 
@@ -46,10 +46,9 @@ def plot_wind_turbine(nodes, elements) :
     ax.w_xaxis.pane.fill = False
     ax.w_yaxis.pane.fill = False
     ax.w_zaxis.pane.fill = False
-
     plt.savefig('picture/wind_turbine.pdf',bbox_inches='tight',dpi=600,format='pdf')
 
-# plot_wind_turbine(nodes, elements) 
+plot_wind_turbine(nodes, elements) 
 
 def plot_rigid_links(nodes, elements) : 
     """ Plot la structure avec les noeuds et les éléments
@@ -156,18 +155,30 @@ def convergence_study() :
     for i in range (1,len(frequence)+1) : 
         number_element.append(16*i + 28*i + 5)
     dif = [] #matrice qui va calculé le decalage par rapport au nombre d'élémént
-    total_diff = 0  
-    print(len(frequence)-1)
-    for i in range (len(frequence)) : 
-        total_diff = 0
-        for j in range(8) : 
-            total_diff += abs(frequence[0][j] - frequence[i][j])
-        dif.append(total_diff)
+    # total_diff = 0  
+    # print(len(frequence)-1)
+    # for i in range (len(frequence)) : 
+    #     total_diff = 0
+    #     for j in range(8) : 
+    #         total_diff += abs(frequence[0][j] - frequence[i][j])
+    #     dif.append(total_diff)
+    f_propre_1 = []
+    f_propre_2 = []
+    f_propre_3 = []
+    for i in range(len(frequence)): 
+        f_propre_1.append(frequence[i][1])
+        f_propre_2.append(frequence[i][3])
+        f_propre_3.append(frequence[i][5])
     fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.plot(number_element, dif)
-    ax.set_xlabel('Number elements[/]')
-    ax.set_ylabel('The sum of the frequency differences between the first and the last iteration [Hz]')
-    plt.savefig("picture/convergence_study.pdf", bbox_inches="tight", dpi=600)
+    ax = fig.add_subplot(111) 
+    ax.plot(number_element, f_propre_1, label = "2st frequency") 
+    ax.plot(number_element, f_propre_2, label = "4nd frequency")
+    ax.plot(number_element, f_propre_3, label = "6rd frequency")
+    ax.axvline(x=93, color='red', linestyle='--', label='converege')
+    ax.legend(loc="upper right")
+    ax.set_xticks(number_element)
+    ax.set_xlabel('Number elements[/]') 
+    ax.set_ylabel('Frequency [Hz]')
+    plt.savefig("picture/convergence_study.pdf", bbox_inches="tight", dpi=600)   
     
 convergence_study()

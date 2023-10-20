@@ -139,7 +139,7 @@ def elem_matrix(beam_param) :
 
     f = (E*A)/h
     g = (12*E*Iz)/(h**3)
-    i = (6*E*Iz)/(h**2)
+    i = (6*E*Iz)/(h**2) #g et j meme chose
     j = (12*E*Iy)/(h**3)
     k = (6*E*Iy)/(h**2)
     m = (G*Jx)/h
@@ -193,17 +193,18 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         Jx_leg = 0.5*m_leg*(0.5**2 + (0.5-0.02)**2)                     # Moment d'inertie selon l'axe x [kg.m^2]
         Jyz_leg = 0.25*m_leg*(1**2 + (1-0.02)**2)+(m_leg*(h**2))/12 # Moment d'inertie selon l'axe y et z [kg.m^2]
 
-        param = [A_leg, (1.0 + (1-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
+        param = [A_leg, (0.5 + (0.5-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
     if elem in rili_elem : 
       # Definition des constantes pour les rigid links
-        m_leg = rho*math.pi*h*(0.5**2 - (0.5-0.02)**2) 
-        rho_r = rho*1e-4                               # Densite [kg/m^3]
-        E_r = E*1e4                                    # Module de Young [Pa]
-        A_r = A_leg*1e-2                               # Section [m^2]
+        m_leg = rho*math.pi*h*(0.5**2 - (0.5-0.02)**2)  
+        rho_r = rho*1e-4                                # Densite [kg/m^3]
+        E_r = E*1e4                                     # Module de Young [Pa]
+        A_r = A_leg*1e-2                                # Section [m^2]
+        m_leg = rho_r*A_r*h                             # Masse [kg]
         Iyz_r = ((math.pi/64)*(1**4 - (1-0.04)**4))*1e4 # Moment quadratique selon l'axe y et z [m^4]
-        Jx_r = (0.5*m_leg*(0.5**2 + (0.5-0.02)**2))*1e4    # Moment d'intertie selon l'axe x [kg.m^2]
-        G_r = E_r/(2*(1+nu))                           # Module de cisaillement [Pa]
-        r = math.sqrt(A_r/math.pi) # A VERIFIER
+        Jx_r = (0.5*m_leg*(0.5**2 + (0.5-0.02)**2))*1e4 # Moment d'intertie selon l'axe x [kg.m^2]
+        G_r = E_r/(2*(1+nu))                            # Module de cisaillement [Pa]
+        r = math.sqrt(A_r/math.pi)                      # A VERIFIER
 
         param = [A_r, r, h, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
 
@@ -218,5 +219,11 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         param = [A_beam, (0.3+(0.3-0.02))/2, h, E, Iyz_beam, Iyz_beam, Jx_beam, G, rho]
 
     return param
-
-
+def mass_rigid_body(Ke, Me,h) : 
+    ue = np.zeros(len(Ke))
+    Ke = np.array(Ke)
+    Me = np.array(Me)
+    ue = np.linalg.solve(Ke, ue) 
+    m = (ue.T@Me@ue)/h
+    
+    return m

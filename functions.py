@@ -194,6 +194,8 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         Jyz_leg = 0.25*m_leg*(1**2 + (1-0.02)**2)+(m_leg*(h**2))/12 # Moment d'inertie selon l'axe y et z [kg.m^2]
 
         param = [A_leg, (0.5 + (0.5-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
+        print("leg_elem")
+        print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
     if elem in rili_elem : 
       # Definition des constantes pour les rigid links
         m_leg = rho*math.pi*h*(0.5**2 - (0.5-0.02)**2)  
@@ -207,23 +209,26 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         r = math.sqrt(A_r/math.pi)                      # A VERIFIER
 
         param = [A_r, r, h, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
+        print("rigid elment")
+        print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
 
     else : 
       # Definition des caracteristiques pour une poutre secondaire (selon les axes locaux)
-        m_beam = rho*math.pi*h*(0.3**2 - (0.3-0.02**2))                    # Masse [kg]
+        m_beam = rho*math.pi*h*(0.3**2 - (0.3-0.02)**2)                    # Masse [kg]
         Iyz_beam = (math.pi/64)*(0.6**4 - (0.6-0.04)**4)                    # Moment quadratique selon l'axe y et z [m^4]
         Ix_beam = (math.pi/2)*(0.3**4 - (0.3-0.02)**2)                     # Moment quadratique selon l'axe x [m^4]
         Jx_beam = 0.5*m_beam*(0.3**2 + (0.3-0.02)**2)                      # Moment d'inertie selon l'axe x [kg.m^2]
         Jyz_beam = 0.25*m_beam*(0.6**2 + (0.6-0.04)**2)+(m_beam*(h**2))/12 # Moment d'inertie selon l'axe y et z [km.m^2]
 
         param = [A_beam, (0.3+(0.3-0.02))/2, h, E, Iyz_beam, Iyz_beam, Jx_beam, G, rho]
-
+        print("little_element")
+        print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
     return param
 def mass_rigid_body(Ke, Me,h) : 
     ue = np.zeros(len(Ke))
     Ke = np.array(Ke)
     Me = np.array(Me)
     ue = np.linalg.solve(Ke, ue) 
-    m = (ue.T@Me@ue)/h
+    m = (ue.T@Me@ue)
     
     return m

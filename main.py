@@ -45,10 +45,11 @@ locel = locel.astype(int)
 size = dof_list[len(dof_list)-1][5]
 K = np.zeros((size, size))
 M = np.zeros((size, size))
-m = 0 
+masse_totoal = 0 
 # Boucle sur tous les elements
 for e in range(len(elements)) : 
     # Creation des matries elementaires
+
     param = fct.get_param(e, leg_elem, rili_elem, elements, nodes)
     M_el, K_el = fct.elem_matrix(param)
 
@@ -68,7 +69,7 @@ for e in range(len(elements)) :
     dir_X = [1.0, 0.0, 0.0]
     dir_Y = [0.0, 1.0, 0.0]
     dir_Z = [0.0, 0.0, 1.0]
-    m += fct.mass_rigid_body(M_el, K_el,param[2])
+    masse_totoal += fct.mass_rigid_body(M_el, K_el,param[2])
     
     T = [[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
          [np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
@@ -88,6 +89,7 @@ for e in range(len(elements)) :
     K_eS = np.matmul(k_eS, T)
     M_eS = np.matmul(m_eS, T)
     # Assemblage dans la matrice globale 
+    print(K_eS)
     locel_loc = locel[e]
     for i in range(12) : 
         for j in range(12) : 
@@ -107,7 +109,6 @@ for m in range(6) :
 # 
 # print(np.sum(M - M.T))
 # print(np.sum(K - K.T))
-print("masse_all",m)
 # APPLICATION DES CONTRAINTES 
 for d in range(24) : 
     M = np.delete(M, (23-d), axis=0)

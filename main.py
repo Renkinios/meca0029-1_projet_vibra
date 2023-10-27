@@ -89,7 +89,6 @@ for e in range(len(elements)) :
     K_eS = np.matmul(k_eS, T)
     M_eS = np.matmul(m_eS, T)
     # Assemblage dans la matrice globale 
-    print(K_eS)
     locel_loc = locel[e]
     for i in range(12) : 
         for j in range(12) : 
@@ -118,7 +117,7 @@ for d in range(24) :
 
 # numerical solution of K q= w^2 M q  juste K/M = w^2
 # page 351 juste selectionner les n premiers modes 
-#deja mis mm et EA/l ? 
+# deja mis mm et EA/l ? 
 
 eigenvals, eigenvects = linalg.eigh(K,M)
 eigenvals = np.sort(eigenvals)

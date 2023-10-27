@@ -133,10 +133,10 @@ def elem_matrix(beam_param) :
             [    0,     0,     0,   d/2,     0,     0,     0,     0,     0,     d,     0,     0],
             [    0,     0,     b,     0,    -e,     0,     0,     0,     a,     0,     c,     0],
             [    0,    -b,     0,     0,     0,    -e,     0,    -a,     0,     0,     0,     c]]
-    for i in range(12) : 
-        for j in range(12) : 
-            M_el[i][j] = M_el[i][j]*rho*A*h
-
+    # for i in range(12) : 
+    #     for j in range(12) : 
+    #         M_el[i][j] = M_el[i][j]*rho*A*h
+    M_el = rho*A*h*np.array(M_el)
     f = (E*A)/h
     g = (12*E*Iz)/(h**3)
     i = (6*E*Iz)/(h**2) #g et j meme chose
@@ -157,8 +157,9 @@ def elem_matrix(beam_param) :
             [    0,     0,     0,    -m,     0,     0,     0,     0,     0,     m,     0,     0],
             [    0,     0,    -k,     0,     o,     0,     0,     0,     k,     0,   2*o,     0],
             [    0,     i,     0,     0,     0,     n,     0,    -i,     0,     0,     0,   2*n]]
-
-    
+    K_el = np.array(K_el)
+    # print("matrice k_el", K_el)
+    # print("matrice M_el : ",M_el)
     return M_el, K_el
     
 def get_param(elem, leg_elem, rili_elem, elements, nodes) : 
@@ -190,7 +191,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         m_leg = rho*math.pi*h*(0.5**2 - (0.5-0.02)**2)              # Masse d'une poutre principale [kg]
         Iyz_leg = (math.pi/64)*(1**4 - (1-0.04)**4)                  # Moment quadratique selon l'axe y et z [m^4]
         # Ix_leg = (math.pi/2)*(1**4 - (1-0.02)**2)                   # Moment quadratique selon l'axe x [m^4]
-        Jx_leg = 0.5*m_leg*(0.5**2 + (0.5-0.02)**2)                     # Moment d'inertie selon l'axe x [kg.m^2]
+        Jx_leg = math.pi/4 * (0.5**4 - (0.5-0.02)**4)                    # Moment d'inertie selon l'axe x [kg.m^2]
         Jyz_leg = 0.25*m_leg*(1**2 + (1-0.02)**2)+(m_leg*(h**2))/12 # Moment d'inertie selon l'axe y et z [kg.m^2]
 
         param = [A_leg, (0.5 + (0.5-0.02))/2, h, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
@@ -204,7 +205,8 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         A_r = A_leg*1e-2                                # Section [m^2]
         m_leg = rho_r*A_r*h                             # Masse [kg]
         Iyz_r = ((math.pi/64)*(1**4 - (1-0.04)**4))*1e4 # Moment quadratique selon l'axe y et z [m^4]
-        Jx_r = (0.5*m_leg*(0.5**2 + (0.5-0.02)**2))*1e4 # Moment d'intertie selon l'axe x [kg.m^2]
+        # Jx_r = (0.5*m_leg*(0.5**2 + (0.5-0.02)**2))*1e4 # Moment d'intertie selon l'axe x [kg.m^2]
+        Jx_r = math.pi/4 *(0.5**4 - (0.5-0.02)**4) *1e4      # Moment d'intertie selon l'axe x [m^4]
         G_r = E_r/(2*(1+nu))                            # Module de cisaillement [Pa]
         r = math.sqrt(A_r/math.pi)                      # A VERIFIER
 
@@ -217,7 +219,8 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         m_beam = rho*math.pi*h*(0.3**2 - (0.3-0.02)**2)                    # Masse [kg]
         Iyz_beam = (math.pi/64)*(0.6**4 - (0.6-0.04)**4)                    # Moment quadratique selon l'axe y et z [m^4]
         Ix_beam = (math.pi/2)*(0.3**4 - (0.3-0.02)**2)                     # Moment quadratique selon l'axe x [m^4]
-        Jx_beam = 0.5*m_beam*(0.3**2 + (0.3-0.02)**2)                      # Moment d'inertie selon l'axe x [kg.m^2]
+        # Jx_beam = 0.5*m_beam*(0.3**2 + (0.3-0.02)**2)                      # Moment d'inertie selon l'axe x [kg.m^2] 
+        Jx_beam = math.pi/4 *(0.3**4 - (0.3-0.02)**4)
         Jyz_beam = 0.25*m_beam*(0.6**2 + (0.6-0.04)**2)+(m_beam*(h**2))/12 # Moment d'inertie selon l'axe y et z [km.m^2]
 
         param = [A_beam, (0.3+(0.3-0.02))/2, h, E, Iyz_beam, Iyz_beam, Jx_beam, G, rho]

@@ -28,7 +28,7 @@ for e in range(len(nodes)) :
     dof_elem = [count, count+1, count+2, count+3, count+4, count+5]
     dof_list.append(dof_elem)
     count+=6
-
+#prend pas en compte les contrainte 
 # CREATION DE LA MATRICE LOCEL (reprenant les dof impliques pour chaque element) 
 locel = np.zeros((len(elements), 12))
 for i in range(len(elements)) :   
@@ -40,12 +40,11 @@ for i in range(len(elements)) :
                    dof_list[elements[i][1]][2], dof_list[elements[i][1]][3], 
                    dof_list[elements[i][1]][4], dof_list[elements[i][1]][5]]
 locel = locel.astype(int)
-
 # CREATION DES MATRICES ELEMENTAIRES, ROTATION ET ASSEMBLAGE
 size = dof_list[len(dof_list)-1][5]
 K = np.zeros((size, size))
 M = np.zeros((size, size))
-masse_totoal = 0 
+masse_total = 0 
 # Boucle sur tous les elements
 for e in range(len(elements)) : 
     # Creation des matries elementaires
@@ -64,30 +63,14 @@ for e in range(len(elements)) :
     elem_len = math.sqrt((node_2[0] - node_1[0])**2 + (node_2[1] - node_1[1])**2 + (node_2[2] - node_1[2])**2)
     dir_x = [(node_2[0]-node_1[0])/elem_len, (node_2[1]-node_1[1])/elem_len, (node_2[2]-node_1[2])/elem_len]
     dir_y = np.asarray(np.cross(d_2, d_3))/np.linalg.norm(np.cross(d_2, d_3))
-
     dir_z = np.cross(dir_x, dir_y)
     dir_X = [1.0, 0.0, 0.0]
     dir_Y = [0.0, 1.0, 0.0]
     dir_Z = [0.0, 0.0, 1.0]
-    masse_totoal += fct.mass_rigid_body(M_el, K_el,param[2])
-    
-    T = [[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-         [np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-         [np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x), 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y), 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z), 0.0, 0.0, 0.0], 
-         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)], 
-         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)], 
-         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
-    # Application de la rotation
-    k_eS = np.matmul(np.transpose(T), K_el)
-    m_eS = np.matmul(np.transpose(T), M_el)
-    K_eS = np.matmul(k_eS, T)
-    M_eS = np.matmul(m_eS, T)
+    Re = [[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)],[np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)],[np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
+    Te = np.kron(np.eye(4), Re)
+    K_eS = Te.T@K_el@Te
+    M_eS = Te.T@M_el@Te
     # Assemblage dans la matrice globale 
     locel_loc = locel[e]
     for i in range(12) : 
@@ -99,6 +82,7 @@ for e in range(len(elements)) :
 # AJOUT DE LA MASSE PONCTUELLE 
 mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6]) #sur le dernier noeud de la jambe
 dof_rotor = dof_list[21]
+print("dof_rotor",dof_rotor)
 for m in range(6) : 
     for n in range(6) : 
         mm = dof_rotor[m]-1
@@ -109,16 +93,20 @@ for m in range(6) :
 # print(np.sum(M - M.T))
 # print(np.sum(K - K.T))
 # APPLICATION DES CONTRAINTES 
+np.set_printoptions(threshold=10000)
 for d in range(24) : 
     M = np.delete(M, (23-d), axis=0)
     M = np.delete(M, (23-d), axis=1)
     K = np.delete(K, (23-d), axis=0)
     K = np.delete(K, (23-d), axis=1)
-
+u = np.zeros(len(M))
+for i in range(0, len(M),6):
+    u[i] = 1
+masse_total += u.T@M@u
 # numerical solution of K q= w^2 M q  juste K/M = w^2
 # page 351 juste selectionner les n premiers modes 
 # deja mis mm et EA/l ? 
-
+print("Masse totale (kg) :", masse_total)
 eigenvals, eigenvects = linalg.eigh(K,M)
 eigenvals = np.sort(eigenvals)
 eigenvals = eigenvals[-8:]

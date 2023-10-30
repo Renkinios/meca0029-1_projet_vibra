@@ -155,7 +155,7 @@ def elem_matrix(beam_param) :
             [    0,     i,     0,     0,     0,     n,     0,    -i,     0,     0,     0,   2*n]]
     K_el = np.array(K_el)
     # print("matrice k_el", K_el)
-    print("matrice M_el : ",M_el)
+    # print("matrice M_el : ",M_el)
     return M_el, K_el
     
 def get_param(elem, leg_elem, rili_elem, elements, nodes) : 
@@ -184,40 +184,32 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
 
     if elem in leg_elem : 
       # Definition des caracteristiques pour une pour principale (elon les axes locaux)
-        m_leg = rho*math.pi*l*(0.5**2 - (0.5-0.02)**2)              # Masse d'une poutre principale [kg]
-        Iyz_leg = (math.pi/64)*(1**4 - (1-0.04)**4)                  # Moment quadratique selon l'axe y et z [m^4]
-        # Ix_leg = (math.pi/2)*(1**4 - (1-0.02)**2)                   # Moment quadratique selon l'axe x [m^4]
-        Jx_leg = math.pi/4 * (0.5**4 - (0.5-0.02)**4)                    # Moment d'inertie selon l'axe x [kg.m^2]
-        Jyz_leg = 0.25*m_leg*(1**2 + (1-0.02)**2)+(m_leg*(l**2))/12 # Moment d'inertie selon l'axe y et z [kg.m^2]
-        r = np.sqrt(Jx_leg/A_leg)
-        param = [A_leg, r, l, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
+        Iyz_leg = (math.pi / 64) * (1**4 - 0.96**4)  # Moment quadratique selon l'axe y et z [m^4]
+        Jx_leg = Iyz_leg * 2                         # Moment quadratique selon l'axe x [m^4]
+        r_leg = np.sqrt(Iyz_leg/A_leg)               # Rayon de giration [m]
+        param = [A_leg, r_leg, l, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
         # print("leg_elem")
         # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
+
     if elem in rili_elem : 
       # Definition des constantes pour les rigid links
-        m_leg = rho*math.pi*l*(0.5**2 - (0.5-0.02)**2)  
         rho_r = rho*1e-4                                # Densite [kg/m^3]
         E_r = E*1e4                                     # Module de Young [Pa]
         A_r = A_leg*1e-2                                # Section [m^2]
-        m_leg = rho_r*A_r*l                             # Masse [kg]
-        Iyz_r = ((math.pi/64)*(1**4 - (1-0.04)**4))*1e4 # Moment quadratique selon l'axe y et z [m^4]
-        # Jx_r = (0.5*m_leg*(0.5**2 + (0.5-0.02)**2))*1e4 # Moment d'intertie selon l'axe x [kg.m^2]
-        Jx_r = math.pi/4 *(0.5**4 - (0.5-0.02)**4) *1e4      # Moment d'intertie selon l'axe x [m^4]
+        Iyz_r = ((math.pi / 64) * (1**4 - 0.96**4))*1e4 # Moment quadratique selon l'axe y et z [m^4]
+        Jx_r = (Iyz_r * 2)*1e4                        # Moment quadratique selon l'axe x [m^4]
         G_r = E_r/(2*(1+nu))                            # Module de cisaillement [Pa]
-        r = np.sqrt(Jx_r/A_r)
-        param = [A_r, r, l, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
+        r_rili = np.sqrt(Iyz_r/A_r)                     # Rayon de giration [m]
+        param = [A_r, r_rili, l, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
         # print("rigid elment")
         # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
+
     else : 
       # Definition des caracteristiques pour une poutre secondaire (selon les axes locaux)
-        m_beam = rho*math.pi*l*(0.3**2 - (0.3-0.02)**2)                    # Masse [kg]
-        Iyz_beam = (math.pi/64)*(0.6**4 - (0.6-0.04)**4)                    # Moment quadratique selon l'axe y et z [m^4]
-        Ix_beam = (math.pi/2)*(0.3**4 - (0.3-0.02)**2)                     # Moment quadratique selon l'axe x [m^4]
-        # Jx_beam = 0.5*m_beam*(0.3**2 + (0.3-0.02)**2)                      # Moment d'inertie selon l'axe x [kg.m^2] 
-        Jx_beam = math.pi/4 *(0.3**4 - (0.3-0.02)**4)
-        Jyz_beam = 0.25*m_beam*(0.6**2 + (0.6-0.04)**2)+(m_beam*(l**2))/12 # Moment d'inertie selon l'axe y et z [km.m^2]
-        r = np.sqrt(Jx_beam/A_beam)
-        param = [A_beam,r, l, E, Iyz_beam, Iyz_beam, Jx_beam, G, rho]
+        Iyz_beam = (math.pi / 64) * (0.6**4 - 0.56**4)  # Moment quadratique selon l'axe y et z [m^4]
+        Jx_beam = Iyz_beam * 2                          # Moment quadratique selon l'axe x [m^4]
+        r_beam = np.sqrt(Iyz_beam/A_beam)               # Rayon de giration [m]
+        param = [A_beam,r_beam, l, E, Iyz_beam, Iyz_beam, Jx_beam, G, rho]
         # print("little_element")
         # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
     return param

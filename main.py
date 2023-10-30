@@ -1,19 +1,19 @@
-﻿import numpy as np
+import numpy as np
 import matplotlib.pyplot as plt
 import functions as fct
 import math
+from scipy import linalg
 from scipy.linalg import eigh
-#from scipy import linalg
-# from scipy.linalg import eigh
-# coding=utf-8
 
 # VISUALISATION DE LA STRUCTURE INITIALE
 nodes, elements = fct.read_data('Data/init_nodes.txt')
 # fct.plot_nodes(nodes, elements)
-nMode = 8
+nMode = 8 # nombre de mode a calculer
 # CREATION DES LISTES INITIALES DE CATEGORIE (leg ou rigid link (rili))
 leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
 rili_elem = [56,57,58,59,60]
+# print(fct.euclidian_distance(4, elements, nodes))
+# print(fct.euclidian_distance(27, elements, nodes))
 
 # MODIFICATION DU NOMBRE D'ELEMENTS
 # elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
@@ -69,7 +69,6 @@ for e in range(len(elements)) :
     dir_Z = [0.0, 0.0, 1.0]
     Re = [[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)],[np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)],[np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
     Te = np.kron(np.eye(4), Re)
-
     K_eS = Te.T@K_el@Te
     M_eS = Te.T@M_el@Te
     # Assemblage dans la matrice globale 
@@ -83,17 +82,15 @@ for e in range(len(elements)) :
 # AJOUT DE LA MASSE PONCTUELLE 
 mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6]) #sur le dernier noeud de la jambe
 dof_rotor = dof_list[21]
-<<<<<<< HEAD
-=======
-# print("dof_rotor",dof_rotor)
->>>>>>> 021fde3b5da959036aedfcdf64c7f2143aa93e30
 for m in range(6) : 
     for n in range(6) : 
         mm = dof_rotor[m]-1
         nn = dof_rotor[n]-1
         M[mm][nn] += mass[m][n]
 #mode rigide masse, translation rotasion, terre , length 6 mode rigif 2.94 *10^57
-
+# 
+# print(np.sum(M - M.T))
+# print(np.sum(K - K.T))
 # APPLICATION DES CONTRAINTES 
 for d in range(24) : 
     M = np.delete(M, (23-d), axis=0)
@@ -108,11 +105,9 @@ masse_total += u.T@M@u
 # page 351 juste selectionner les n premiers modes 
 # deja mis mm et EA/l ? 
 print("Masse totale (kg) :", masse_total)
-
-eigenvals, eigenvects = eigh(K,M)
+eigenvals, x = linalg.eigh(K,M)
 eigenvals = np.sort(eigenvals)
-eigenvals = eigenvals[-8:]
-print(eigenvals)
+eigenvals = eigenvals[-nMode:]
 w = np.sqrt(eigenvals)
 f = w/(2*math.pi)
 # D, V = eigh(K, M, 8) 
@@ -126,12 +121,12 @@ print("Fréquences propres (hz) :", f)
 #premier question crée la matrice C = aK + bM
 #                                 𝜀_r = 1/2 (a w_0r + B/w_or)
 # he damping ratio of the first two modes is equal to 0.5 % 
-epsilonne_12 = 0.005               
-a = 2*e/(w[0] + w[1])
+eps_1_2 = 0.005               
+a = 2*eps_1_2/(w[0] + w[1])
 b = a* w[0] * w[1]
 C = a * K + b * M
-epsilonne_r = 0.5*(a*w+b/w)
-print("Damping ratio :", epsilonne_r)
+eps = 0.5*(a*w+b/w)
+print("Damping ratio :", eps)
 exit_masse = 1000                      #kg
 exit_vitesse  = 25 /3.6                #m/s
 exit_frequence = 1                     #hz
@@ -141,12 +136,17 @@ F_max = exit_masse*exit_frequence*0.15 /exit_temps_impacte # delta momentum / de
 norm_F = F_max *np.sin(2*np.pi*exit_frequence*t)           # regarder pour determiné comment appliquer la force
 #force distrubué celon X et Y avec un angle de 45°
 p = np.zeros((len(M),len(t)))
-p[dof_elem[17][0]-1] = norm_F/np.sqrt(2)
-p[dof_elem[17][1]-1] = norm_F/np.sqrt(2)
+p[dof_list[17][0]-1] = norm_F/np.sqrt(2)
+p[dof_list[17][1]-1] = norm_F/np.sqrt(2)
 
 # Compute an approximate solution using the mode displacement method. Plot the
 # time evolution in the direction of the impact both at the excitation point and
 # at the rotor location.
 #modale superposition method
-w_d = w * np.sqrt(1-epsilonne_r**2)
-phi =zeros()
+w_d = w * np.sqrt(1-eps**2)
+phi = np.zeros((nMode,len(t)))
+n = np.zeros((nMode,len(t)))
+for r in range(nMode) :
+    mu = x[r].T@M@x[r]
+    phi[r] = x[r].T@p/mu
+    #  h_t = 1/w[r]*np.exp(eps[r]*w[r]*t)*np.sin(w_d[r]*t) 

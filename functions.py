@@ -155,11 +155,7 @@ def elem_matrix(beam_param) :
             [    0,     i,     0,     0,     0,     n,     0,    -i,     0,     0,     0,   2*n]]
     K_el = np.array(K_el)
     # print("matrice k_el", K_el)
-<<<<<<< HEAD
     # print("matrice M_el : ",M_el)  
-=======
-    # print("matrice M_el : ",M_el)
->>>>>>> 021fde3b5da959036aedfcdf64c7f2143aa93e30
     return M_el, K_el
     
 def get_param(elem, leg_elem, rili_elem, elements, nodes) : 

@@ -8,7 +8,7 @@ from scipy.linalg import eigh
 # VISUALISATION DE LA STRUCTURE INITIALE
 nodes, elements = fct.read_data('Data/init_nodes.txt')
 # fct.plot_nodes(nodes, elements)
-
+nMode = 8
 # CREATION DES LISTES INITIALES DE CATEGORIE (leg ou rigid link (rili))
 leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
 rili_elem = [56,57,58,59,60]
@@ -82,7 +82,6 @@ for e in range(len(elements)) :
 # AJOUT DE LA MASSE PONCTUELLE 
 mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6]) #sur le dernier noeud de la jambe
 dof_rotor = dof_list[21]
-print("dof_rotor",dof_rotor)
 for m in range(6) : 
     for n in range(6) : 
         mm = dof_rotor[m]-1
@@ -93,7 +92,6 @@ for m in range(6) :
 # print(np.sum(M - M.T))
 # print(np.sum(K - K.T))
 # APPLICATION DES CONTRAINTES 
-np.set_printoptions(threshold=10000)
 for d in range(24) : 
     M = np.delete(M, (23-d), axis=0)
     M = np.delete(M, (23-d), axis=1)
@@ -115,3 +113,35 @@ f = w/(2*math.pi)
 # D, V = eigh(K, M, 8) 
 print("Fréquences propres (hz) :", f) 
 # remet les valeur a 0 pour eigenvals
+
+# deuxieme partie 
+# Synchronous excitation in the form of a sine wave F = sin(wt) 
+# sur le noeud 17 
+
+#premier question crée la matrice C = aK + bM
+#                                 𝜀_r = 1/2 (a w_0r + B/w_or)
+# he damping ratio of the first two modes is equal to 0.5 % 
+epsilonne_12 = 0.005               
+a = 2*e/(w[0] + w[1])
+b = a* w[0] * w[1]
+C = a * K + b * M
+epsilonne_r = 0.5*(a*w+b/w)
+print("Damping ratio :", epsilonne_r)
+exit_masse = 1000                      #kg
+exit_vitesse  = 25 /3.6                #m/s
+exit_frequence = 1                     #hz
+exit_temps_impacte = 0.05              #s
+t = np.linspace(0,120,1000) 
+F_max = exit_masse*exit_frequence*0.15 /exit_temps_impacte # delta momentum / delta t 
+norm_F = F_max *np.sin(2*np.pi*exit_frequence*t)           # regarder pour determiné comment appliquer la force
+#force distrubué celon X et Y avec un angle de 45°
+p = np.zeros((len(M),len(t)))
+p[dof_elem[17][0]-1] = norm_F/np.sqrt(2)
+p[dof_elem[17][1]-1] = norm_F/np.sqrt(2)
+
+# Compute an approximate solution using the mode displacement method. Plot the
+# time evolution in the direction of the impact both at the excitation point and
+# at the rotor location.
+#modale superposition method
+w_d = w * np.sqrt(1-epsilonne_r**2)
+phi =zeros()

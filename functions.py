@@ -155,7 +155,7 @@ def elem_matrix(beam_param) :
             [    0,     i,     0,     0,     0,     n,     0,    -i,     0,     0,     0,   2*n]]
     K_el = np.array(K_el)
     # print("matrice k_el", K_el)
-    print("matrice M_el : ",M_el)
+    # print("matrice M_el : ",M_el)  
     return M_el, K_el
     
 def get_param(elem, leg_elem, rili_elem, elements, nodes) : 
@@ -177,7 +177,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
     nu = 0.3                                            # Coefficient de Poisson [-]
     rho = 7800                                          # Densite de l'acier utilise [kg/m^3]
     G = E/(2*(1+nu))                                    # Module de cisaillement [Pa]
-    l = euclidian_distance(elem, elements,nodes)        # Longeur en [mm]
+    l = euclidian_distance(elem, elements,nodes)        
     l = l*1e-3                                          # Longueur de l'element [m]
 
     param = []

@@ -12,7 +12,7 @@ def plot_wind_turbine(nodes, elements) :
             - Rien
     """
     main_legs = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
-    fig = plt.figure()
+    fig = plt.figure(figsize=((20,100)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 
     for i in elements:
@@ -32,22 +32,11 @@ def plot_wind_turbine(nodes, elements) :
         j += 1
     for i in range(4) : 
         ax.scatter(nodes[i][0]/1000, nodes[i][1]/1000, nodes[i][2]/1000,color='orange', marker='o')
-    # for node in nodes:
-    #     ax.plot(node[0], node[1], node[2], 'ro')
     ax.set_xlabel('X-axis [m]')
     ax.set_ylabel('Y-axis [m]')
-    ax.set_zlabel('Z-axis [m]')
-    # ax.set_zlim(0,25000)
-    # fig.set_facecolor('black')
-    # ax.set_facecolor('white')
-    fig.set_facecolor('white')
-    ax.set_facecolor('white') 
-    ax.grid(False)
-    ax.w_xaxis.pane.fill = False
-    ax.w_yaxis.pane.fill = False
-    ax.w_zaxis.pane.fill = False
+    ax.set_zlabel('Z-axis [m]', labelpad=100)
+    ax.set_aspect('equal')
     plt.savefig('picture/wind_turbine.pdf',bbox_inches='tight',dpi=600,format='pdf')
-
 plot_wind_turbine(nodes, elements) 
 
 def plot_rigid_links(nodes, elements) : 
@@ -59,7 +48,7 @@ def plot_rigid_links(nodes, elements) :
             - Rien
     """
     main_legs = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
-    fig = plt.figure()
+    fig = plt.figure(figsize=((20,100)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 
     for i in elements:
@@ -82,22 +71,13 @@ def plot_rigid_links(nodes, elements) :
         j += 1
     for i in range(4) : 
         ax.scatter(nodes[i][0]/1000, nodes[i][1]/1000, nodes[i][2]/1000,color='orange', marker='o')
-    # for node in nodes:
-    #     ax.plot(node[0], node[1], node[2], 'ro')
+
     ax.set_xlabel('X-axis [m]')
     ax.set_ylabel('Y-axis [m]')
-    ax.set_zlabel('Z-axis [m]')
-    # ax.set_zlim(0,25000)
-    # fig.set_facecolor('black')
-    # ax.set_facecolor('white')
-    fig.set_facecolor('white')
-    ax.set_facecolor('white') 
-    ax.grid(False)
-    ax.w_xaxis.pane.fill = False
-    ax.w_yaxis.pane.fill = False
-    ax.w_zaxis.pane.fill = False
+    ax.set_zlabel('Z-axis [m]', labelpad=100)
+    ax.set_aspect('equal')
     plt.savefig('picture/rigid_links.pdf',bbox_inches='tight',dpi=600,format='pdf')
-# plot_rigid_links(nodes, elements)
+plot_rigid_links(nodes, elements)
 def plot_nodes(nodes, elements,fichier) : 
     """ Plot la structure avec les noeuds et les éléments
         Arguments : 
@@ -107,7 +87,7 @@ def plot_nodes(nodes, elements,fichier) :
             - Rien
     """
     main_legs = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
-    fig = plt.figure()
+    fig = plt.figure(figsize=((20,100)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 
     for i in elements:
@@ -116,12 +96,12 @@ def plot_nodes(nodes, elements,fichier) :
             y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
             z = [nodes[i[0]][2]/1000, nodes[i[1]][2]/1000]
             ax.plot(x, y, z,color="blue")
-        # elif j in [56,57,58,59,60] : 
-        #     x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
-        #     y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
-        #     z = [nodes[i[0]][2]/1000, nodes[i[1]][2]/1000]
-        #     ax.plot(x, y, z,color="green")
-            # ax.scatter(nodes[21][0]/1000, nodes[21][1]/1000, nodes[21][2]/1000,color='green', marker='o')
+        elif j in [56,57,58,59,60] : 
+            x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
+            y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
+            z = [nodes[i[0]][2]/1000, nodes[i[1]][2]/1000]
+            ax.plot(x, y, z,color="green")
+            ax.scatter(nodes[21][0]/1000, nodes[21][1]/1000, nodes[21][2]/1000,color='green', marker='o')
         else :
             x = [nodes[i[0]][0]/1000, nodes[i[1]][0]/1000]
             y = [nodes[i[0]][1]/1000, nodes[i[1]][1]/1000]
@@ -130,20 +110,13 @@ def plot_nodes(nodes, elements,fichier) :
         j += 1
     for node in nodes:
         ax.plot(node[0]/1000, node[1]/1000, node[2]/1000, 'peru', marker='o', markersize = 3)
-
     ax.set_xlabel('X-axis [m]')
     ax.set_ylabel('Y-axis [m]')
-    ax.set_zlabel('Z-axis [m]')
-    fig.set_facecolor('white')
-    ax.set_facecolor('white') 
-    ax.grid(False)
-    ax.w_xaxis.pane.fill = False
-    ax.w_yaxis.pane.fill = False
-    ax.w_zaxis.pane.fill = False
-    # ax.set_zlim(0, 25)  
+    ax.set_zlabel('Z-axis [m]', labelpad=100)
+    ax.set_aspect('equal')
     plt.savefig(fichier,bbox_inches='tight',dpi=600,format='pdf')
-# plot_nodes(nodes_2, elements_2,"picture/node_turbine_2.pdf") 
-# plot_nodes(nodes, elements,"picture/node_turbine_1.pdf")
+plot_nodes(nodes_2, elements_2,"picture/node_turbine_2.pdf") 
+plot_nodes(nodes, elements,"picture/node_turbine_1.pdf")
 # convergence study
 def convergence_study() : 
     number_element = []
@@ -181,4 +154,46 @@ def convergence_study() :
     ax.set_ylabel('Frequency [Hz]')
     plt.savefig("picture/convergence_study.pdf", bbox_inches="tight", dpi=600)   
     
-convergence_study()
+# convergence_study() 
+def plot_q_deplacement(x,t) : 
+    fig = plt.figure()
+    ax = fig.add_subplot(111) 
+    ax.plot(t, x) 
+    ax.set_xlabel('Time [s]') 
+    ax.set_ylabel('Displacement [m]')
+    plt.savefig("picture/q_deplacement.pdf", bbox_inches="tight", dpi=600)
+def deformotion_frequence_propre(x,nMode,nodes,elements) :
+    titre = "picture/py_def_mode_"
+    matrix_def = np.copy(x)
+    for i in range(24) :
+        matrix_def = np.insert(matrix_def,0,0,axis=1)
+    for mode in range(nMode) :
+        titre += str(mode+1) + ".pdf"
+        fig = plt.figure(figsize=((20,100)))
+        ax  = fig.add_subplot(111, projection='3d')
+        for i in nodes : 
+            ax.scatter(i[0]/1000, i[1]/1000, i[2]/1000,color='lightblue', marker='o',alpha=0.3)
+        for j in elements : 
+            x = [nodes[j[0]][0]/1000, nodes[j[1]][0]/1000]
+            y = [nodes[j[0]][1]/1000, nodes[j[1]][1]/1000]
+            z = [nodes[j[0]][2]/1000, nodes[j[1]][2]/1000]
+            ax.plot(x, y, z,color="navy")
+        defo_nodes = nodes.copy()
+        defo_nodes = np.array(defo_nodes)/1000
+        v = 0
+        for i in range(len(defo_nodes)) :
+            v = 6 * i
+            defo_nodes[i][0] += 10  * matrix_def[mode][v]
+            defo_nodes[i][1] += 10 * matrix_def[mode][v+1]
+            defo_nodes[i][2] += 10 * matrix_def[mode][v+2]
+        for i in elements : 
+            x = [defo_nodes[i[0]][0], defo_nodes[i[1]][0]]
+            y = [defo_nodes[i[0]][1], defo_nodes[i[1]][1]]
+            z = [defo_nodes[i[0]][2], defo_nodes[i[1]][2]]
+            ax.plot(x, y, z,color="red")
+        ax.set_xlabel('X-axis [m]')
+        ax.set_ylabel('Y-axis [m]')
+        ax.set_zlabel('Z-axis [m]')
+        ax.set_zlabel('Z-axis [m]', labelpad=100)
+        ax.set_aspect('equal')
+        plt.savefig(titre, bbox_inches="tight", dpi=600)

@@ -11,7 +11,7 @@ def plot_wind_turbine(nodes, elements) :
         Return : 
             - Rien
     """
-    main_legs = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
+    main_legs = [0,1,2,3,8,9,10,11,20,21,22,23,32,33,34,35]
     fig = plt.figure(figsize=((20,100)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 
@@ -47,7 +47,7 @@ def plot_rigid_links(nodes, elements) :
         Return : 
             - Rien
     """
-    main_legs = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
+    main_legs = [0,1,2,3,8,9,10,11,20,21,22,23,32,33,34,35]
     fig = plt.figure(figsize=((20,100)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 
@@ -86,7 +86,7 @@ def plot_nodes(nodes, elements,fichier) :
         Return : 
             - Rien
     """
-    main_legs = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
+    main_legs = [0,1,2,3,8,9,10,11,20,21,22,23,32,33,34,35]
     fig = plt.figure(figsize=((20,100)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 

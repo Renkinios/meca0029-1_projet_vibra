@@ -16,8 +16,8 @@ if actu_graph :
     graphe.plot_nodes(nodes, elements, "picture/node_turbine_1.pdf")
 nMode = 8 # nombre de mode a calculer,nombre de mode inclus dans al superoposition modale
 # CREATION DES LISTES INITIALES DE CATEGORIE (leg ou rigid link (rili))
-leg_elem = [0,1,2,3,8,9,10,11,24,25,26,27,40,41,42,43]
-rili_elem = [56,57,58,59,60]
+leg_elem = [0,1,2,3,8,9,10,11,20,21,22,23,32,33,34,35]
+rili_elem = [44,45,46,47,48]
 # MODIFICATION DU NOMBRE D'ELEMENTS
 # elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements, leg_elem, rili_elem)
 # fct.writing_nodes_element_file(nodes, elements, 'Data/nodes_2.txt')
@@ -74,6 +74,7 @@ for e in range(len(elements)) :
     Te    = np.kron(np.eye(4), Re)
     K_eS  = Te.T@K_el@Te
     M_eS = Te.T@M_el@Te
+    print("M_es", M_eS)
     # Assemblage dans la matrice globale 
     locel_loc = locel[e]
     for i in range(12) : 

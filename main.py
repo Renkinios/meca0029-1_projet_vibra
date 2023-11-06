@@ -43,19 +43,20 @@ for i in range(len(elements)) :
                    dof_list[elements[i][1]][2], dof_list[elements[i][1]][3], 
                    dof_list[elements[i][1]][4], dof_list[elements[i][1]][5]]
 locel = locel.astype(int)
+
 # CREATION DES MATRICES ELEMENTAIRES, ROTATION ET ASSEMBLAGE
 size = dof_list[len(dof_list)-1][5]
 K = np.zeros((size, size))
 M = np.zeros((size, size))
-masse_total = 0 
+
 # Boucle sur tous les elements
 for e in range(len(elements)) : 
     # Creation des matries elementaires
-
     param = fct.get_param(e, leg_elem, rili_elem, elements, nodes)
     M_el, K_el = fct.elem_matrix(param)
 
     # Creation de l'operateur de rotation
+
     node_1 = nodes[elements[e][0]] # mm
     node_2 = nodes[elements[e][1]]
     node_3 = [-1000.0, 0.0, -1000.0] # pas colineaire
@@ -74,7 +75,9 @@ for e in range(len(elements)) :
     Te    = np.kron(np.eye(4), Re)
     K_eS  = Te.T@K_el@Te
     M_eS = Te.T@M_el@Te
-    print("M_es", M_eS)
+    # print("M_eS",M_eS) 
+    # print("K_eS",K_eS)
+    
     # Assemblage dans la matrice globale 
     locel_loc = locel[e]
     for i in range(12) : 
@@ -83,14 +86,21 @@ for e in range(len(elements)) :
             jj = locel_loc[j]-1 # ? 
             K[ii][jj] += K_eS[i][j]
             M[ii][jj] += M_eS[i][j]
+np.set_printoptions(threshold=np.inf)
+
+# print("M :",M[:10]) 
 # AJOUT DE LA MASSE PONCTUELLE 
 mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6]) #sur le dernier noeud de la jambe
 dof_rotor = dof_list[21]
-for m in range(6) : 
-    for n in range(6) : 
-        mm = dof_rotor[m]-1
-        nn = dof_rotor[n]-1
-        M[mm][nn] += mass[m][n]
+# for m in range(6) : 
+#     for n in range(6) : 
+#         mm = dof_rotor[m]-1
+#         nn = dof_rotor[n]-1
+#         M[mm][nn] += mass[m][n]   essaie comme le code qu'on a il fait sa 
+for m in range(6) :  
+    mm = dof_rotor[m]-1
+    nn = dof_rotor[m]-1
+    M[mm][nn] += mass[m][m]
 #mode rigide masse, translation rotasion, terre , length 6 mode rigif 2.94 *10^57
 # 
 # print(np.sum(M - M.T))
@@ -104,21 +114,20 @@ for d in range(24) :
 u = np.zeros(len(M))
 for i in range(0, len(M),6):
     u[i] = 1
-masse_total += u.T@M@u
+masse_total = u.T@M@u
 # numerical solution of K q= w^2 M q  juste K/M = w^2
 # page 351 juste selectionner les n premiers modes 
 # deja mis mm et EA/l ? 
 print("Masse totale (kg) :", masse_total)
-eigenvals, x = linalg.eigh(K,M)
-
+eigenvals, x   = linalg.eig(K,M)
+sorted_val     = np.sort(eigenvals)
 sorted_indices = np.argsort(eigenvals)
 eigenvals      = eigenvals[sorted_indices]
-eigenvals      = eigenvals[-nMode:]
+eigenvals      = eigenvals[:nMode]
 x              = x[sorted_indices]
-x              = x[-nMode:]
-w              = np.sqrt(eigenvals)
-f              = w/(2*math.pi)
-# D, V = eigh(K, M, 8) 
+x              = x[:nMode]
+w              = np.real(np.sqrt(eigenvals))
+f              = w/(2*np.pi)
 print("Fréquences propres (hz) :", f) 
 # remet les valeur a 0 pour eigenvals
 # graphe des modes de vibration deformation on rajoute les contraintes

@@ -114,7 +114,7 @@ def elem_matrix(beam_param) :
             - M_el : la matrice elementaire de masse
             - K_el : la matrice elementaire d'energie cinetique
     """
-    print("\n A :",beam_param[0],"r :",beam_param[1],"rho :",beam_param[8],"l :",beam_param[2],"\n")
+
 
     A = beam_param[0]; r = beam_param[1]; h=beam_param[2]; E=beam_param[3]; Iz=beam_param[4]; Iy=beam_param[5]; Jx=beam_param[6]; G=beam_param[7]; rho=beam_param[8]
     a = (11*h)/210
@@ -134,6 +134,7 @@ def elem_matrix(beam_param) :
             [    0,     0,     0,   d/2,     0,     0,     0,     0,     0,     d,     0,     0],
             [    0,     0,     b,     0,    -e,     0,     0,     0,     a,     0,     c,     0],
             [    0,    -b,     0,     0,     0,    -e,     0,    -a,     0,     0,     0,     c]]
+
     M_el = rho*A*h*np.array(M_el)
     f = (E*A)/h
     g = (12*E*Iz)/(h**3)
@@ -143,6 +144,7 @@ def elem_matrix(beam_param) :
     m = (G*Jx)/h
     n = (2*E*Iz)/h
     o = (2*E*Iy)/h
+    # print("A :",A,"l :",h,"E :",E,"G :",G, "Jx :",Jx, "Iy :",Iy, "Iz :",Iz) 
     K_el = [[    f,     0,     0,     0,     0,     0,    -f,     0,     0,     0,     0,     0], 
             [    0,     g,     0,     0,     0,     i,     0,    -g,     0,     0,     0,     i],
             [    0,     0,     j,     0,    -k,     0,     0,     0,    -j,     0,    -k,     0], 
@@ -156,8 +158,6 @@ def elem_matrix(beam_param) :
             [    0,     0,    -k,     0,     o,     0,     0,     0,     k,     0,   2*o,     0],
             [    0,     i,     0,     0,     0,     n,     0,    -i,     0,     0,     0,   2*n]]
     K_el = np.array(K_el)
-    # print("matrice k_el", K_el)
-    # print("matrice M_el : ",M_el)  
     return M_el, K_el
     
 def get_param(elem, leg_elem, rili_elem, elements, nodes) : 
@@ -199,9 +199,9 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         E_r = E*1e4                                     # Module de Young [Pa]
         A_r = A_leg*1e-2                                # Section [m^2]
         Iyz_r = ((math.pi / 64) * (1**4 - 0.96**4))*1e4 # Moment quadratique selon l'axe y et z [m^4]
-        Jx_r = (Iyz_r * 2)*1e4                        # Moment quadratique selon l'axe x [m^4]
+        Jx_r = (Iyz_r * 2)                              # Moment quadratique selon l'axe x [m^4]
         G_r = E_r/(2*(1+nu))                            # Module de cisaillement [Pa]
-        r_rili = np.sqrt(Jx_r/A_r)                     # Rayon de giration [m]
+        r_rili = np.sqrt(Jx_r/A_r)                      # Rayon de giration [m]
         param = [A_r, r_rili, l, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
         # print("rigid elment")
         # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])

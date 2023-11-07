@@ -54,30 +54,35 @@ for e in range(len(elements)) :
     # Creation des matries elementaires
     param = fct.get_param(e, leg_elem, rili_elem, elements, nodes)
     M_el, K_el = fct.elem_matrix(param)
-
     # Creation de l'operateur de rotation
 
     node_1 = nodes[elements[e][0]] # mm
     node_2 = nodes[elements[e][1]]
-    node_3 = [-1000.0, 0.0, -1000.0] # pas colineaire
-
-    d_2 = [node_2[0]-node_1[0], node_2[1]-node_1[1], node_2[2]-node_1[2]]
-    d_3 = [node_3[0]-node_1[0], node_3[1]-node_1[1], node_3[2]-node_1[2]]
-
+    node_3 = [-1000, -1000, -1000] # pas colineaire
+    print("node :",node_1, node_2)
+    d_2 = np.array([node_2[0]-node_1[0], node_2[1]-node_1[1], node_2[2]-node_1[2]])
+    d_3 = np.array([node_3[0]-node_1[0], node_3[1]-node_1[1], node_3[2]-node_1[2]])
     elem_len = math.sqrt((node_2[0] - node_1[0])**2 + (node_2[1] - node_1[1])**2 + (node_2[2] - node_1[2])**2)
-    dir_x = [(node_2[0]-node_1[0])/elem_len, (node_2[1]-node_1[1])/elem_len, (node_2[2]-node_1[2])/elem_len]
-    dir_y = np.asarray(np.cross(d_2, d_3))/np.linalg.norm(np.cross(d_2, d_3))
-    dir_z = np.cross(dir_x, dir_y)
-    dir_X = [1.0, 0.0, 0.0]
-    dir_Y = [0.0, 1.0, 0.0]
-    dir_Z = [0.0, 0.0, 1.0]
-    Re    = [[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)],[np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)],[np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]]
-    Te    = np.kron(np.eye(4), Re)
-    K_eS  = Te.T@K_el@Te
-    M_eS = Te.T@M_el@Te
-    # print("M_eS",M_eS) 
-    # print("K_eS",K_eS)
-    
+    dir_x    = d_2/elem_len
+    dir_y    = np.cross(d_3, d_2)
+    dir_y    = dir_y/np.linalg.norm(dir_y)
+    dir_z    = np.cross(dir_x, dir_y)
+    dir_X    = np.array([1.0, 0.0, 0.0])
+    dir_Y    = np.array([0.0, 1.0, 0.0])
+    dir_Z    = np.array([0.0, 0.0, 1.0])
+    Re       = np.array([[np.dot(dir_X, dir_x), np.dot(dir_Y, dir_x), np.dot(dir_Z, dir_x)],[np.dot(dir_X, dir_y), np.dot(dir_Y, dir_y), np.dot(dir_Z, dir_y)],[np.dot(dir_X, dir_z), np.dot(dir_Y, dir_z), np.dot(dir_Z, dir_z)]])
+    Te       = np.kron(np.eye(4), Re)
+    K_eS     = Te.T @ K_el @ Te
+    M_eS     = Te.T @ M_el @Te
+    # print("M_el :",M_el)
+    # print("T :",Te)
+    print("T.T :",Te.T)
+    victor = Te.T @ M_el 
+    print("victor :",victor)
+    corentin = victor @ Te
+    print("corentin :",corentin)
+    # print("M_es :",(Te.T @ M_el )@ Te)    # print("K_eS",K_eS)
+
     # Assemblage dans la matrice globale 
     locel_loc = locel[e]
     for i in range(12) : 
@@ -96,7 +101,7 @@ dof_rotor = dof_list[21]
 #     for n in range(6) : 
 #         mm = dof_rotor[m]-1
 #         nn = dof_rotor[n]-1
-#         M[mm][nn] += mass[m][n]   essaie comme le code qu'on a il fait sa 
+#         M[mm][nn] += mass[m][n]   #essaie comme le code qu'on a il fait sa 
 for m in range(6) :  
     mm = dof_rotor[m]-1
     nn = dof_rotor[m]-1

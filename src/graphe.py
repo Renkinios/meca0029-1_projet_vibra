@@ -2,9 +2,7 @@ import matplotlib.pyplot as plt
 import functions  as fct
 import numpy as np
 import write_read as write_read
-nodes, elements = write_read.read_data('Data/init_nodes.txt')
-nodes_2, elements_2,leg_elem_2,rili_elem_2 = fct.new_nodes(nodes, elements,4)
-# node_4, element_4,leg_elem_4,rili_elem_4 = fct.new_nodes(nodes_2, elements_2,2)
+
 def plot_nodes(nodes, elements,fichier) : 
     """ Plot la structure avec les noeuds et les éléments
         Arguments : 
@@ -13,7 +11,10 @@ def plot_nodes(nodes, elements,fichier) :
         Return : 
             - Rien
     """
-    fig = plt.figure(figsize=((50,20)))
+    nodes, elements = write_read.read_data('Data/init_nodes.txt')
+    nodes_2, elements_2,leg_elem_2,rili_elem_2 = fct.new_nodes(nodes, elements,4)
+    node_4, element_4,leg_elem_4,rili_elem_4 = fct.new_nodes(nodes_2, elements_2,2)
+    fig = plt.figure(figsize=((40,5)))
     ax = fig.add_subplot(111, projection='3d')
     j = 0 
     for i in elements:
@@ -41,8 +42,8 @@ def plot_nodes(nodes, elements,fichier) :
     ax.set_zlabel('Z-axis [m]', labelpad=100)
     ax.set_aspect('equal')
     plt.savefig(fichier,bbox_inches='tight',dpi=600,format='pdf')
-plot_nodes(nodes_2, elements_2,"picture/node_turbine_2.pdf") 
-plot_nodes(nodes, elements,"picture/node_turbine_1.pdf")
+# plot_nodes(nodes_2, elements_2,"picture/node_turbine_2.pdf") 
+# plot_nodes(nodes, elements,"picture/node_turbine_1.pdf")
 # convergence study
 # def convergence_study() : 
 #     number_element = []
@@ -80,13 +81,37 @@ plot_nodes(nodes, elements,"picture/node_turbine_1.pdf")
 #     ax.set_ylabel('Frequency [Hz]')
 #     plt.savefig("picture/convergence_study.pdf", bbox_inches="tight", dpi=600)   
 # convergence_study() 
-def plot_q_deplacement(x,t) : 
-    fig = plt.figure()
-    ax = fig.add_subplot(111) 
-    ax.plot(t, x) 
-    ax.set_xlabel('Time [s]') 
-    ax.set_ylabel('Displacement [m]')
-    plt.savefig("picture/q_deplacement.pdf", bbox_inches="tight", dpi=600)
+def plot_q_deplacement(q_deplacement,dof_list,t,titre) :
+    """
+    Plot les déplacements en fonction du temps
+        Arguments :
+            - q_deplacement : vecteur des déplacements
+            - dof_list : liste des degrés de liberté
+            - t : temps
+            - titre : titre du graphique
+        Return :
+            Rien
+    """
+    index_rot = dof_list[21][0] - 1 - 6 * 4 # en x
+    index_direction_force = dof_list[17][0]- 1 - 6 * 4 # en x
+    q_deplacement  = q_deplacement.real
+    q_deplacement  = q_deplacement.T
+    direction_force_v = [-1,1,0]
+    direction_force = - q_deplacement[index_direction_force] + q_deplacement[index_direction_force+1] # projection sur le veceur [1,1,0]
+    dir_force_rot   = - q_deplacement[index_rot] + q_deplacement[index_rot+1]
+    fig_1 = plt.figure(figsize=((15,5)))
+    plt.plot(t,dir_force_rot*1000)
+    plt.xlabel("Time [s]")
+    plt.ylabel("Desplacement [mm]")
+    titre_rot= titre + ".pdf"
+    plt.savefig(titre_rot, bbox_inches="tight", dpi=600)
+    fig_2 = plt.figure(figsize=((15,5)))
+    plt.plot(t,direction_force*1000)
+    plt.xlabel("Time [s]")
+    plt.ylabel("Desplacement [mm]")
+    titre_force = titre + "_f.pdf"
+    plt.savefig(titre_force, bbox_inches="tight", dpi=600)
+
 def deformotion_frequence_propre(X,nMode,nodes,elements) :
     """
     Plot les modes de vibration

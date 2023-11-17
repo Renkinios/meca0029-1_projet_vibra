@@ -28,13 +28,18 @@ def new_nodes(nodes, elements,nb_elemnt_by_leg):
             y = nodes[elements[i][0]][1] + j * (nodes[elements[i][1]][1] - nodes[elements[i][0]][1])/nb_elemnt_by_leg
             z = nodes[elements[i][0]][2] + j * (nodes[elements[i][1]][2] - nodes[elements[i][0]][2])/nb_elemnt_by_leg
             new_nodes.append([x, y, z])
-            if j == 1 :
+            if j == 1 and j+1 == nb_elemnt_by_leg :
                 new_element_1 = [elements[i][0], count]
                 new_element.append(new_element_1)
-            if j+1 == nb_elemnt_by_leg :
                 new_element.append([count, elements[i][1]])
+            elif j+1 == nb_elemnt_by_leg :
+                new_element.append([count-1, count])
+                new_element.append([count, elements[i][1]])
+            elif j == 1 :
+                new_element_1 = [elements[i][0], count]
+                new_element.append(new_element_1)
             else :
-                new_element.append([count, count+1])
+                new_element.append([count-1, count])
             count += 1
         if i in leg_elem :
             for j in range(nb_elemnt_by_leg) :   
@@ -167,6 +172,5 @@ def natural_frequency(M,K,nMode) :
     eigenvals      = eigenvals[sorted_indices]
     eigenvals      = eigenvals[:nMode]
     x              = x[:, sorted_indices]
-    print("vecteur propre",x.shape)
     w              = np.real(np.sqrt(eigenvals))
     return w, x

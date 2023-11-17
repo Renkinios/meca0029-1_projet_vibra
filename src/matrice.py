@@ -136,3 +136,82 @@ def matrice_global(locel_e, K_eS, M_eS,dof_list) :
             K[ii][jj] += K_eS[i][j]
             M[ii][jj] += M_eS[i][j]
     return K, M
+def matrix_global_assembly(locel_loc, K_eS, M_eS, K, M) :
+    """
+    Assemble la matrice globale
+        Arguments : 
+            locel : matrice locel
+            K_eS : matrice de raideur
+            M_eS : matrice de masse
+            K : matrice de raideur globale
+            M : matrice de masse globale
+            e : element courant
+        return : 
+            K : matrice de raideur globale
+            M : matrice de masse globale
+    """
+    for i in range(12) : 
+        for j in range(12) : 
+            ii = locel_loc[i]-1
+            jj = locel_loc[j]-1 # ? 
+            K[ii][jj] += K_eS[i][j]
+            M[ii][jj] += M_eS[i][j]
+    return K, M
+
+def masse_ponctuelle(M,dof_list) :
+    """
+    Ajoute la masse ponctuelle
+        Arguments : 
+            M : matrice de masse
+            dof_list : liste des dof
+        return : 
+            M : matrice de masse avec la masse ponctuelle
+    """
+    mass = np.diag([200000, 200000, 200000, 24e6, 24e6, 24e6]) #sur le dernier noeud de la jambe
+    dof_rotor = dof_list[21]
+
+    for m in range(6) :  
+        mm         = dof_rotor[m]-1
+        nn         = dof_rotor[m]-1
+        M[mm][nn] += mass[m][m]
+    return M
+
+def damping_ratio(w,K,M) :
+    """
+    Calcule le damping ratio
+        Arguments : 
+            w : fréquences naturelles
+            K : matrice de raideur
+            M : matrice de masse
+        return : 
+            eps : damping ratio
+            C   : matrice de damping
+    """
+    eps_1_2 = 0.005               
+    a       = 2*eps_1_2/(w[0] + w[1])
+    b       = a* w[0] * w[1]
+    C       = a * K + b * M
+    eps     = 0.5*(a*w+b/w) 
+    return eps, C
+def force_p(M,dof_list,t) :
+    """
+    Calcule la force p
+        Arguments : 
+            M : matrice de masse
+            dof_list : liste des dof
+            t : temps
+        return : 
+            p : force p
+    """ 
+    exit_masse           = 1000              #kg
+    exit_vitesse         = 25 /3.6           #m/s
+    exit_frequence       = 1                 #hz
+    exit_temps_impacte   = 0.05              #s
+    F_max                = exit_masse*exit_vitesse*0.85 /exit_temps_impacte   #[N]
+    print("Force max :", F_max) # delta momentum / delta t  
+    norm_F               = F_max *np.sin(2*np.pi*exit_frequence*t)            # regarder pour determiné comment appliquer la force
+    #force distrubué celon X et Y avec un angle de 45°
+    p                    = np.zeros((len(M),len(t)))
+    p[dof_list[17][0]-1 - 24] = - norm_F/np.sqrt(2)
+    p[dof_list[17][1]-1 - 24] = norm_F/np.sqrt(2)
+    return p

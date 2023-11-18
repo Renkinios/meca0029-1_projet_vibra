@@ -6,17 +6,16 @@ import graphe as graphe
 import write_read as write_read
 import methode as mth
 import matrice as mtx
+import time
 # VISUALISATION DE LA STRUCTURE INITIALE
 # si veux actualisé les graphes mettre true 
-write_e_n       = True       # if you want to write the new nodes and element in a file
+write_e_n       = False       # if you want to write the new nodes and element in a file
 actu_graph      = False      # if you want actualisée graph
-nb_elem_by_leg  = 2          #number of element by leg
+nb_elem_by_leg  = 1          #number of element by leg
 nMode           = 8          # nombre de mode a calculer,nombre de mode inclus dans la superoposition modale
 nodes, elements = write_read.read_data('Data/init_nodes.txt')
 
 if actu_graph :
-    graphe.plot_wind_turbine(nodes, elements)
-    graphe.plot_rigid_links(nodes, elements)
     graphe.plot_nodes(nodes, elements, "picture/node_turbine_2.pdf")
 # MODIFICATION DU NOMBRE D'ELEMENTS, CREATION DES LISTES INITIALES DE CATEGORIE
 
@@ -99,9 +98,12 @@ q = mth.New_mth(t,M,C,K,p)
 if actu_graph :
     graphe.plot_q_deplacement(q, dof_list,t, "picture/q_newmark.pdf")
 # ----------------------------------------------------- troisieme partie --------------------------------------------------------------------
-K_gi,M_gi = mth.guyan_irons(dof_list,K,M)
-w_Guyan_Irons,X_Guyan_Irons   = fct.natural_frequency(M_gi, K_gi,nMode)
-print("Fréquences propres de Guyan-Irons (hz) :", w_Guyan_Irons/(2*np.pi)) 
-
-# print(sol.shape)
-# R_gi = [np.eye(8), -np.linalg.inv(Krr) @ Kcr] 
+# method de guyan irons
+K_gi, M_gi, Mcc, Kcc, Rgi, Krr, Kt, Mt = mth.guyan_irons(dof_list,K,M,nMode)
+w_gi, x_gi = fct.natural_frequency(M_gi, K_gi,nMode) 
+print("Fréquences propres guyan_irons(hz) :", w_gi/(2*np.pi))
+# method de Craig Bampton 
+Neigenmodes = 5
+K_gb,M_gb  = mth.Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt)
+w_gb, x_gb = fct.natural_frequency(M_gb, K_gb,nMode)
+print("Fréquences propres Craig_Bampton(hz) :", w_gb/(2*np.pi))

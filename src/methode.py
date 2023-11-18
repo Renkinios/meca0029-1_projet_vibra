@@ -1,5 +1,5 @@
 import numpy as np
-
+import functions as fct
 def methode_superposition(M,K,w,x,eps,p,t,nMode):
     """ Cree les modes de deplasament par rapport a la methode de superposition, utilisation
     d'une fonction pour regarder plus facilement la convergence de celle-ci par rapport a nMode
@@ -73,7 +73,7 @@ def New_mth(t,M,C,K,p) :
         q_dot[n+1]      = q_star_dot[n+1] + gamma * h * q_2dot[n+1]
         q[n+1]          = q_star[n+1] + beta * h**2 * q_2dot[n+1]
     return q
-def guyan_irons(dof_list,K,M) :
+def guyan_irons(dof_list,K,M,nMode) :
     """ Methode de guyan_irons
         Arguments : 
             - dof_list : liste des dof
@@ -90,28 +90,51 @@ def guyan_irons(dof_list,K,M) :
     dofR[1].append(dof_list[21][5])
     dofR = np.array([element for sous_liste in dofR for element in sous_liste]) -24 -1 
 
-    Kcc  = K.copy()
-    Kcc  = np.delete(Kcc, dofR, axis=0)
-    Kcc  = np.delete(Kcc, dofR, axis=1)
+    Cdofs = np.arange(0, len(K))        
+    Cdofs = np.delete(Cdofs, dofR)
 
-    Kcr  = K[:,dofR].copy()
-    Kcr  = np.delete(Kcr, dofR, axis=0)
+    Krr = K[np.ix_(dofR, dofR)]   # retained part
+    Krc = K[np.ix_(dofR, Cdofs)]
+    Kcc = K[np.ix_(Cdofs, Cdofs)]   # condensed part
+    Kcr = K[np.ix_(Cdofs, dofR)]
 
-    Krr  = K[dofR, :][:, dofR].copy()
-    K_m= np.concatenate([np.concatenate([Kcc, Kcr], axis=1), np.concatenate([Kcr.T, Krr], axis=1)], axis=0)
+    Mrr = M[np.ix_(dofR, dofR)]   # retained part
+    Mrc = M[np.ix_(dofR, Cdofs)]
+    Mcc = M[np.ix_(Cdofs, Cdofs)]   # condensed part
+    Mcr = M[np.ix_(Cdofs, dofR)]
+    # Guyan-Iron Reduction
+    Rgi = np.block([[np.eye(len(Krr))], [-(np.linalg.inv(Kcc) @ Kcr)]])  # transformation matrix
+    Kt  = np.block([[Krr, Krc], [Kcr, Kcc]])
+    Mt  = np.block([[Mrr, Mrc], [Mcr, Mcc]])
+    K_til = Rgi.T @ Kt @ Rgi                       # reduced stiffness matrix
+    M_til = Rgi.T @ Mt @ Rgi     
+    # K_til = R_gi.T @ K_m @ R_gi
+    # M_til = R_gi.T @ M_m @ R_gi
+    # w_cc, x_cc = fct.natural_frequency(M_til, K_til,nMode) 
+    
 
-    Mcc  = M.copy()
-    Mcc  = np.delete(Mcc, dofR, axis=0)
-    Mcc  = np.delete(Mcc, dofR, axis=1)
 
-    Mcr  = M[:,dofR].copy()
-    Mcr  = np.delete(Mcr, dofR, axis=0)
+    return K_til, M_til, Mcc, Kcc, Rgi, Krr, Kt, Mt
 
-    Mrr  = M[dofR, :][:, dofR].copy()
-    M_m  = np.concatenate([np.concatenate([Mcc, Mcr], axis=1), np.concatenate([Mcr.T, Mrr], axis=1)], axis=0)
-    # sol = -np.linalg.inv(Krr) @ Kcr.T
-    R_gi  = np.concatenate([np.eye(8), -np.linalg.inv(Kcc) @ Kcr], axis=0)
-
-    K_til = R_gi.T @ K_m @ R_gi
-    M_til = R_gi.T @ M_m @ R_gi
-    return K_til, M_til
+def Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt) : 
+    """ Methode de Craig_Bampton
+        Arguments : 
+            - Mcc : matrice de masse condense
+            - Kcc : matrice de raideur condense
+            - Krr : matrice de raideur reduite
+            - Rgi : matrice de transformation
+            - Neigenmodes : nombre de mode repris
+            - nMode : nombre de mode
+            - Kt : matrice de raideur total
+            - Mt : matrice de masse total
+        Return : 
+            - Kcb : matrice de raideur reduite
+            - Mcb : matrice de masse reduite
+    """
+    w_cc,X_cc = fct.natural_frequency(Mcc, Kcc,nMode)
+    phi_r = X_cc[:, :Neigenmodes]
+    Rcb2 = np.vstack((np.zeros((len(Krr), Neigenmodes)), phi_r)) # transformation submatrix
+    Rcb  = np.hstack((Rgi, Rcb2)) # transformation matrix
+    Kcb = Rcb.T @ Kt @ Rcb # reduced stiffness matrix
+    Mcb = Rcb.T @ Mt @ Rcb # reduced mass matrix
+    return Kcb, Mcb

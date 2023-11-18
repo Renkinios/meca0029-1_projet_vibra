@@ -96,9 +96,8 @@ def plot_q_deplacement(q_deplacement,dof_list,t,titre) :
     index_direction_force = dof_list[17][0]- 1 - 6 * 4 # en x
     q_deplacement  = q_deplacement.real
     q_deplacement  = q_deplacement.T
-    direction_force_v = [-1,1,0]
-    direction_force = - q_deplacement[index_direction_force] + q_deplacement[index_direction_force+1] # projection sur le veceur [1,1,0]
-    dir_force_rot   = - q_deplacement[index_rot] + q_deplacement[index_rot+1]
+    direction_force = - q_deplacement[index_direction_force] + q_deplacement[index_direction_force+1] # direction_force_v = [-1,1,0]
+    dir_force_rot   = - q_deplacement[index_rot] + q_deplacement[index_rot+1] # direction_force_v = [-1,1,0]        
     fig_1 = plt.figure(figsize=((15,5)))
     plt.plot(t,dir_force_rot*1000)
     plt.xlabel("Time [s]")
@@ -155,3 +154,43 @@ def deformotion_frequence_propre(X,nMode,nodes,elements) :
         ax.set_zlabel('Z-axis [m]', labelpad=100)
         ax.set_aspect('equal')
         plt.savefig(titre, bbox_inches="tight", dpi=600)
+def comp_newR_new_R_ap(q,q_ap,dof_list,t) :
+    """
+    Plot les déplacements en fonction du temps
+        Arguments :
+            - q : vecteur des déplacements
+            - q_ap : vecteur des déplacements approximé
+            - dof_list : liste des degrés de liberté
+            - t : temps
+        Return :
+            Rien
+    """
+    index_rot = dof_list[21][0] - 1 - 6 * 4 # en x
+    index_direction_force = dof_list[17][0]- 1 - 6 * 4 # en x
+    q_deplacement   = q.real
+    q_deplacement   = q_deplacement.T
+    direction_force = - q_deplacement[index_direction_force] + q_deplacement[index_direction_force+1] # direction_force_v = [-1,1,0]
+    dir_force_rot   = - q_deplacement[index_rot] + q_deplacement[index_rot+1] # direction_force_v = [-1,1,0]        
+    q_deplacement   = q.real
+    q_deplacement   = q_deplacement.T
+
+    q_deplacement_ap   = q_ap.real
+    q_deplacement_ap   = q_deplacement_ap.T
+    direction_force_ap = - q_deplacement_ap[0] + q_deplacement_ap[1] # direction_force_v = [-1,1,0]
+    dir_force_rot_ap   = - q_deplacement_ap[4] + q_deplacement_ap[5] # direction_force_v = [-1,1,0]
+    fig_1  = plt.figure(figsize=((15,5)))
+    plt.plot(t,dir_force_rot*1000,label="Exact",linestyle='--',color="red")
+    plt.plot(t,dir_force_rot_ap*1000,label="Approximation",alpha=0.7)
+    plt.xlabel("Time [s]")
+    plt.ylabel("Desplacement [mm]")
+    plt.legend(loc="upper right")
+    plt.savefig("picture/ap_newR_rot.pdf", bbox_inches="tight", dpi=600)
+    fig_2 = plt.figure(figsize=((15,5)))
+    plt.plot(t,direction_force*1000,label="Exact",linestyle='--',color="red")
+    plt.plot(t,direction_force_ap*1000,label="Approximation",alpha=0.7)
+    plt.xlabel("Time [s]")
+    plt.ylabel("Desplacement [mm]")
+    plt.legend(loc="upper right")
+    plt.savefig("picture/ap_newR_force.pdf", bbox_inches="tight", dpi=600)
+
+

@@ -1,24 +1,20 @@
-import numpy as np
+import matplotlib.pyplot as plt
 
-# Créer deux matrices
-matrice1 = np.array([[1, 2], [3, 4]])
-matrice2 = np.array([[5, 6]])
+# Données à tracer
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 1, 3, 5]
 
-# Concaténation horizontale (le long de l'axe des colonnes)
-concatenation_horizontale = np.concatenate((matrice1, matrice2.T), axis=1)
+# Tracer la première ligne en pointillés et couleur bleue
+plt.plot(x, y, linestyle='--', label='Ligne en pointillés')
 
-# Concaténation verticale (le long de l'axe des lignes)
-concatenation_verticale = np.concatenate((matrice1, matrice2), axis=0)
+# Tracer la deuxième ligne avec une couleur plus légère en ajustant l'alpha
+plt.plot(x, y, linestyle='-', alpha=0.7, label='Ligne solide légère')
 
-# Afficher les résultats
-print("Matrice 1:")
-print(matrice1)
+# Ajouter des labels et une légende
+plt.xlabel('Axe des X')
+plt.ylabel('Axe des Y')
+plt.title('Deux lignes superposées')
+plt.legend()
 
-print("\nMatrice 2:")
-print(matrice2)
-
-print("\nConcaténation horizontale:")
-print(concatenation_horizontale)
-
-print("\nConcaténation verticale:")
-print(concatenation_verticale)
+# Afficher le graphique
+plt.show()

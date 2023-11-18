@@ -82,6 +82,14 @@ def guyan_irons(dof_list,K,M,nMode) :
         Return : 
             - K_til : matrice de raideur reduite
             - M_til : matrice de masse reduite
+            - Mcc : matrice de masse condense
+            - Kcc : matrice de raideur condense
+            - Rgi : matrice de transformation
+            - Krr : matrice de raideur reduite
+            - Kt : matrice de raideur total
+            - Mt : matrice de masse total
+            - dofR : dof du rotor
+            - Cdofs : dof du stator
     """
     dofR = []
     dofR.append(dof_list[17][:3]) #dof du rotor x,y,z + rotasion z 012 5
@@ -114,7 +122,7 @@ def guyan_irons(dof_list,K,M,nMode) :
     
 
 
-    return K_til, M_til, Mcc, Kcc, Rgi, Krr, Kt, Mt
+    return K_til, M_til, Mcc, Kcc, Rgi, Krr, Kt, Mt,dofR,Cdofs
 
 def Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt) : 
     """ Methode de Craig_Bampton
@@ -130,11 +138,16 @@ def Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt) :
         Return : 
             - Kcb : matrice de raideur reduite
             - Mcb : matrice de masse reduite
+            - Rcb : matrice de transformation
     """
     w_cc,X_cc = fct.natural_frequency(Mcc, Kcc,nMode)
     phi_r = X_cc[:, :Neigenmodes]
+    print("phi_r",phi_r.shape)
+    print(len(Krr))
     Rcb2 = np.vstack((np.zeros((len(Krr), Neigenmodes)), phi_r)) # transformation submatrix
+    print("Rcb_2",Rcb2.shape)
     Rcb  = np.hstack((Rgi, Rcb2)) # transformation matrix
+    print("Rcb",Rcb.shape)
     Kcb = Rcb.T @ Kt @ Rcb # reduced stiffness matrix
     Mcb = Rcb.T @ Mt @ Rcb # reduced mass matrix
-    return Kcb, Mcb
+    return Kcb, Mcb, Rcb

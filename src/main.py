@@ -99,11 +99,27 @@ if actu_graph :
     graphe.plot_q_deplacement(q, dof_list,t, "picture/q_newmark.pdf")
 # ----------------------------------------------------- troisieme partie --------------------------------------------------------------------
 # method de guyan irons
-K_gi, M_gi, Mcc, Kcc, Rgi, Krr, Kt, Mt = mth.guyan_irons(dof_list,K,M,nMode)
+K_gi, M_gi, Mcc, Kcc, Rgi, Krr, Kt, Mt,dofR,Cdofs = mth.guyan_irons(dof_list,K,M,nMode)
 w_gi, x_gi = fct.natural_frequency(M_gi, K_gi,nMode) 
 print("Fréquences propres guyan_irons(hz) :", w_gi/(2*np.pi))
 # method de Craig Bampton 
 Neigenmodes = 5
-K_gb,M_gb  = mth.Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt)
-w_gb, x_gb = fct.natural_frequency(M_gb, K_gb,nMode)
-print("Fréquences propres Craig_Bampton(hz) :", w_gb/(2*np.pi))
+K_cb, M_cb, Rcb  = mth.Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt)
+w_cb, x_cb  = fct.natural_frequency(M_cb, K_cb,nMode)
+print("Fréquences propres Craig_Bampton(hz) :", w_cb/(2*np.pi))
+#methode avec newmark
+Crr   = C[np.ix_(dofR, dofR)]     # retained part
+Crc   = C[np.ix_(dofR, Cdofs)]
+Ccc   = C[np.ix_(Cdofs, Cdofs)]   # condensed part
+Ccr   = C[np.ix_(Cdofs, dofR)]
+C_t   = np.block([[Crr, Crc], [Ccr, Ccc]])
+C_new = Rcb.T @ C_t @ Rcb
+
+p_r   = p[np.ix_(dofR)]
+p_c   = p[np.ix_(Cdofs)]
+p_t   = np.block([[p_r], [p_c]])
+p_new = Rcb.T @ p_t
+
+q_app = mth.New_mth(t,M_cb,C_new,K_cb,p_new)
+
+graphe.comp_newR_new_R_ap(q,q_app,dof_list,t)

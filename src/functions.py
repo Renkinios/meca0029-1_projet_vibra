@@ -173,4 +173,5 @@ def natural_frequency(M,K,nMode) :
     eigenvals      = eigenvals[:nMode]
     x              = x[:, sorted_indices]
     w              = np.real(np.sqrt(eigenvals))
+
     return w, x

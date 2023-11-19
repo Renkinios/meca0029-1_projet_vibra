@@ -11,10 +11,10 @@ import time
 # si veux actualisé les graphes mettre true 
 write_e_n       = False       # if you want to write the new nodes and element in a file
 actu_graph      = False      # if you want actualisée graph
-nb_elem_by_leg  = 1          #number of element by leg
+nb_elem_by_leg  = 3          #number of element by leg
 nMode           = 8          # nombre de mode a calculer,nombre de mode inclus dans la superoposition modale
 nodes, elements = write_read.read_data('Data/init_nodes.txt')
-
+#----------------------------------------------------- premiere partie --------------------------------------------------------------------
 if actu_graph :
     graphe.plot_nodes(nodes, elements, "picture/node_turbine_2.pdf")
 # MODIFICATION DU NOMBRE D'ELEMENTS, CREATION DES LISTES INITIALES DE CATEGORIE
@@ -50,10 +50,7 @@ for e in range(len(elements)) :
 
 # AJOUT DE LA MASSE PONCTUELLE 
 M = mtx.masse_ponctuelle(M, dof_list)
-#mode rigide masse, translation rotasion, terre , length 6 mode rigif 2.94 *10^57
-# 
-# print(np.sum(M - M.T))
-# print(np.sum(K - K.T))
+
 # APPLICATION DES CONTRAINTES 
 masse_total = fct.masse_total(M)
 M, K        = fct.apply_constraints(M, K)
@@ -62,16 +59,11 @@ np.set_printoptions(threshold=np.inf, precision=8, suppress=True)
 w,x = fct.natural_frequency(M, K,nMode)
 print("Fréquences propres (hz) :", w/(2*np.pi)) 
 print("Masse total :", masse_total)
-# remet les valeur a 0 pour eigenvals
 # graphe des modes de vibration deformation on rajoute les contraintes
 if actu_graph :
     graphe.deformotion_frequence_propre(x,8,nodes,elements)
 # ----------------------------------------------------- deuxieme partie --------------------------------------------------------------------
 # Synchronous excitation in the form of a sine wave F = sin(wt) 
-# sur le noeud 17 
-# premier question crée la matrice C = aK + bM
-#                                 𝜀_r = 1/2 (a w_0r + B/w_or)
-# he damping ratio of the first two modes is equal to 0.5 % 
 # directiond de l'impacte 45° et dans la direction de l'impacte au dernier noeud 
 eps, C = mtx.damping_ratio(w,K,M)
 print("Damping ratio :", eps)
@@ -79,35 +71,41 @@ print("Damping ratio :", eps)
 t      = np.linspace(0, 10, 3000)
 p      = mtx.force_p(M,dof_list,t) 
 
-# Compute an approximate solution using the mode displacement method. Plot the
-# time evolution in the direction of the impact both at the excitation point and
-# at the rotor location.
-# modale superposition method
-
-q_deplacement, q_acc = mth.methode_superposition(M,K,w,x,eps,p,t,nMode)
-if actu_graph :
-    graphe.plot_q_deplacement(q_deplacement, dof_list,t, "picture/q_deplacement.pdf")
-    graphe.plot_q_deplacement(q_acc, dof_list,t, "picture/q_acc.pdf")
-# Compute the solution by time integration using the 
-# . Justify
-# the choice of the time step and integration parameters. Plot the time evolution in
-# the direction of the impact and its corresponding FFT, both at the excitation
-# point and at the rotor location. regarder page 524-525 livres de references
-# Newmarks method
+#q_deplacement, q_acceleration
+# Newmark method
 q = mth.New_mth(t,M,C,K,p)
 if actu_graph :
     graphe.plot_q_deplacement(q, dof_list,t, "picture/q_newmark.pdf")
+    graphe.conv_time_new(t,M,C,K,dof_list,True)    
+    graphe.conv_time_new(t,M,C,K,dof_list,False)
+graphe.fft_new_R(q,t,dof_list)
+
+
+#q_deplacement, q_acceleration
+q_deplacement, q_acc = mth.methode_superposition(M,K,w,x,eps,p,t,nMode)
+
+if actu_graph :
+    graphe.plot_q_deplacement(q_deplacement, dof_list,t, "picture/q_deplacement.pdf")
+    graphe.plot_q_deplacement(q_acc, dof_list,t, "picture/q_acc.pdf")
+    graphe.comp_depl_acc_newR(q_deplacement,q_acc,q,t,dof_list)
+    graphe.conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nMode,True)
+    graphe.conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nMode,True)
+    graphe.conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nMode,False)
+    graphe.conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nMode,False)
+
 # ----------------------------------------------------- troisieme partie --------------------------------------------------------------------
 # method de guyan irons
 K_gi, M_gi, Mcc, Kcc, Rgi, Krr, Kt, Mt,dofR,Cdofs = mth.guyan_irons(dof_list,K,M,nMode)
 w_gi, x_gi = fct.natural_frequency(M_gi, K_gi,nMode) 
 print("Fréquences propres guyan_irons(hz) :", w_gi/(2*np.pi))
+
 # method de Craig Bampton 
-Neigenmodes = 5
+Neigenmodes      = 8
 K_cb, M_cb, Rcb  = mth.Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt)
-w_cb, x_cb  = fct.natural_frequency(M_cb, K_cb,nMode)
+w_cb, x_cb       = fct.natural_frequency(M_cb, K_cb,nMode)
 print("Fréquences propres Craig_Bampton(hz) :", w_cb/(2*np.pi))
-#methode avec newmark
+
+#methode de Craig Bampton avec Newmark
 Crr   = C[np.ix_(dofR, dofR)]     # retained part
 Crc   = C[np.ix_(dofR, Cdofs)]
 Ccc   = C[np.ix_(Cdofs, Cdofs)]   # condensed part
@@ -122,4 +120,6 @@ p_new = Rcb.T @ p_t
 
 q_app = mth.New_mth(t,M_cb,C_new,K_cb,p_new)
 
-graphe.comp_newR_new_R_ap(q,q_app,dof_list,t)
+if actu_graph :
+    graphe.comp_newR_new_R_ap(q,q_app,dof_list,t)
+    graphe.comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,8,nMode,w)

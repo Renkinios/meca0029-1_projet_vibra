@@ -207,11 +207,12 @@ def force_p(M,dof_list,t) :
     exit_vitesse         = 25 /3.6           #m/s
     exit_frequence       = 1                 #hz
     exit_temps_impacte   = 0.05              #s
-    F_max                = exit_masse*exit_vitesse*0.85 /exit_temps_impacte   #[N]
-    print("Force max :", F_max) # delta momentum / delta t  
-    norm_F               = F_max *np.sin(2*np.pi*exit_frequence*t)            # regarder pour determiné comment appliquer la force
+    
+    F_max                = exit_masse*exit_vitesse*0.85 /exit_temps_impacte   #[N]  
+    norm_F               = F_max *np.sin(2*np.pi*exit_frequence*t) 
     #force distrubué celon X et Y avec un angle de 45°
     p                    = np.zeros((len(M),len(t)))
     p[dof_list[17][0]-1 - 24] = - norm_F/np.sqrt(2)
     p[dof_list[17][1]-1 - 24] = norm_F/np.sqrt(2)
+    
     return p

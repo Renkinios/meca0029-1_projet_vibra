@@ -101,27 +101,23 @@ def guyan_irons(dof_list,K,M,nMode) :
     Cdofs = np.arange(0, len(K))        
     Cdofs = np.delete(Cdofs, dofR)
 
-    Krr = K[np.ix_(dofR, dofR)]   # retained part
+    Krr = K[np.ix_(dofR, dofR)]     # retained part
     Krc = K[np.ix_(dofR, Cdofs)]
     Kcc = K[np.ix_(Cdofs, Cdofs)]   # condensed part
     Kcr = K[np.ix_(Cdofs, dofR)]
+    Kt  = np.block([[Krr, Krc], [Kcr, Kcc]])
 
-    Mrr = M[np.ix_(dofR, dofR)]   # retained part
+    Mrr = M[np.ix_(dofR, dofR)]     # retained part
     Mrc = M[np.ix_(dofR, Cdofs)]
     Mcc = M[np.ix_(Cdofs, Cdofs)]   # condensed part
     Mcr = M[np.ix_(Cdofs, dofR)]
-    # Guyan-Iron Reduction
-    Rgi = np.block([[np.eye(len(Krr))], [-(np.linalg.inv(Kcc) @ Kcr)]])  # transformation matrix
-    Kt  = np.block([[Krr, Krc], [Kcr, Kcc]])
     Mt  = np.block([[Mrr, Mrc], [Mcr, Mcc]])
-    K_til = Rgi.T @ Kt @ Rgi                       # reduced stiffness matrix
+
+    Rgi = np.block([[np.eye(len(Krr))], [-(np.linalg.inv(Kcc) @ Kcr)]])  
+
+    K_til = Rgi.T @ Kt @ Rgi                      
     M_til = Rgi.T @ Mt @ Rgi     
-    # K_til = R_gi.T @ K_m @ R_gi
-    # M_til = R_gi.T @ M_m @ R_gi
-    # w_cc, x_cc = fct.natural_frequency(M_til, K_til,nMode) 
     
-
-
     return K_til, M_til, Mcc, Kcc, Rgi, Krr, Kt, Mt,dofR,Cdofs
 
 def Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt) : 
@@ -142,12 +138,10 @@ def Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt) :
     """
     w_cc,X_cc = fct.natural_frequency(Mcc, Kcc,nMode)
     phi_r = X_cc[:, :Neigenmodes]
-    print("phi_r",phi_r.shape)
-    print(len(Krr))
+    
     Rcb2 = np.vstack((np.zeros((len(Krr), Neigenmodes)), phi_r)) # transformation submatrix
-    print("Rcb_2",Rcb2.shape)
     Rcb  = np.hstack((Rgi, Rcb2)) # transformation matrix
-    print("Rcb",Rcb.shape)
+    
     Kcb = Rcb.T @ Kt @ Rcb # reduced stiffness matrix
     Mcb = Rcb.T @ Mt @ Rcb # reduced mass matrix
     return Kcb, Mcb, Rcb

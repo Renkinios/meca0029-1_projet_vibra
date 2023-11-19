@@ -4,16 +4,16 @@ import matplotlib.pyplot as plt
 x = [1, 2, 3, 4, 5]
 y = [2, 4, 1, 3, 5]
 
-# Tracer la première ligne en pointillés et couleur bleue
+# Tracer avec différents styles de ligne
+plt.plot(x, y, linestyle='-', label='Ligne solide (par défaut)')
 plt.plot(x, y, linestyle='--', label='Ligne en pointillés')
-
-# Tracer la deuxième ligne avec une couleur plus légère en ajustant l'alpha
-plt.plot(x, y, linestyle='-', alpha=0.7, label='Ligne solide légère')
+plt.plot(x, y, linestyle=':', label='Ligne en points')
+plt.plot(x, y, linestyle='-.', label='Ligne en tiret-point')
 
 # Ajouter des labels et une légende
 plt.xlabel('Axe des X')
 plt.ylabel('Axe des Y')
-plt.title('Deux lignes superposées')
+plt.title('Différents styles de ligne')
 plt.legend()
 
 # Afficher le graphique

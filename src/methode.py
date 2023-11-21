@@ -54,7 +54,7 @@ def New_mth(t,M,C,K,p) :
 
     #chois gamma et beta corresponds to considering the acceleration average value
     # : q_2dot(tau) = (q_2dot_n + q_2dot_n+1)/2
-    gamma = 1/2 
+    gamma = 1/2
     beta  = 1/4
     h     = t[1]-t[0] #pas de temps
     # condition initial  q_2dot = 0 & q_dot(0) = 0 & q(0) = 0  at the beginning no force
@@ -137,10 +137,10 @@ def Craig_Bampton(Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt) :
             - Rcb : matrice de transformation
     """
     w_cc,X_cc = fct.natural_frequency(Mcc, Kcc,nMode)
-    phi_r = X_cc[:, :Neigenmodes]
+    X_cc = X_cc[:, :Neigenmodes]
     
-    Rcb2 = np.vstack((np.zeros((len(Krr), Neigenmodes)), phi_r)) # transformation submatrix
-    Rcb  = np.hstack((Rgi, Rcb2)) # transformation matrix
+    Rcb2 = np.vstack((np.zeros((len(Krr), Neigenmodes)), X_cc)) # transformation submatrix
+    Rcb  = np.hstack((Rgi, Rcb2))                               # transformation matrix
     
     Kcb = Rcb.T @ Kt @ Rcb # reduced stiffness matrix
     Mcb = Rcb.T @ Mt @ Rcb # reduced mass matrix

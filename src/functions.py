@@ -21,32 +21,42 @@ def new_nodes(nodes, elements,nb_elemnt_by_leg):
         if nb_elemnt_by_leg == 0 :
             KeyError("nb_elemnt_by_leg doit etre superieur a 0")
         elif nb_elemnt_by_leg == 1 :
-            new_element_1 =  [elements[i][0], elements[i][1]]
-            new_element.append(new_element_1)
-        for j in range(1,nb_elemnt_by_leg) :
-            x = nodes[elements[i][0]][0] + j * (nodes[elements[i][1]][0] - nodes[elements[i][0]][0])/nb_elemnt_by_leg
-            y = nodes[elements[i][0]][1] + j * (nodes[elements[i][1]][1] - nodes[elements[i][0]][1])/nb_elemnt_by_leg
-            z = nodes[elements[i][0]][2] + j * (nodes[elements[i][1]][2] - nodes[elements[i][0]][2])/nb_elemnt_by_leg
-            new_nodes.append([x, y, z])
-            if j == 1 and j+1 == nb_elemnt_by_leg :
-                new_element_1 = [elements[i][0], count]
+            if i in rili_elem :
+                new_element_1 = [elements[i][0], elements[i][1]]
                 new_element.append(new_element_1)
-                new_element.append([count, elements[i][1]])
-            elif j+1 == nb_elemnt_by_leg :
-                new_element.append([count-1, count])
-                new_element.append([count, elements[i][1]])
-            elif j == 1 :
-                new_element_1 = [elements[i][0], count]
-                new_element.append(new_element_1)
+                new_rili.append(new_element.index(new_element_1))
             else :
-                new_element.append([count-1, count])
-            count += 1
+                new_element_1 =  [elements[i][0], elements[i][1]]
+                new_element.append(new_element_1)
+        for j in range(1,nb_elemnt_by_leg) :
+            if i in rili_elem :
+                if j ==1 :
+                    new_element_1 = [elements[i][0], elements[i][1]]
+                    new_element.append(new_element_1)
+                    new_rili.append(new_element.index(new_element_1))
+                else :
+                    pass 
+            else :
+                x = nodes[elements[i][0]][0] + j * (nodes[elements[i][1]][0] - nodes[elements[i][0]][0])/nb_elemnt_by_leg
+                y = nodes[elements[i][0]][1] + j * (nodes[elements[i][1]][1] - nodes[elements[i][0]][1])/nb_elemnt_by_leg
+                z = nodes[elements[i][0]][2] + j * (nodes[elements[i][1]][2] - nodes[elements[i][0]][2])/nb_elemnt_by_leg
+                new_nodes.append([x, y, z])
+                if j == 1 and j+1 == nb_elemnt_by_leg :
+                    new_element_1 = [elements[i][0], count]
+                    new_element.append(new_element_1)
+                    new_element.append([count, elements[i][1]])
+                elif j+1 == nb_elemnt_by_leg :
+                    new_element.append([count-1, count])
+                    new_element.append([count, elements[i][1]])
+                elif j == 1 :
+                    new_element_1 = [elements[i][0], count]
+                    new_element.append(new_element_1)
+                else :
+                    new_element.append([count-1, count])
+                count += 1
         if i in leg_elem :
             for j in range(nb_elemnt_by_leg) :   
                 new_leg.append(new_element.index(new_element_1)+j)
-        elif i in rili_elem : 
-            for j in range(nb_elemnt_by_leg) :
-                new_rili.append(new_element.index(new_element_1)+j)
     return new_nodes, new_element, new_leg, new_rili
 
 
@@ -100,8 +110,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         Jx_leg = Iyz_leg * 2                         # Moment quadratique selon l'axe x [m^4]
         r_leg = np.sqrt(Jx_leg/A_leg)               # Rayon de giration [m]
         param = [A_leg, r_leg, l, E, Iyz_leg, Iyz_leg, Jx_leg, G, rho]
-        # print("leg_elem")
-        # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
+
 
     elif elem in rili_elem : 
       # Definition des constantes pour les rigid links
@@ -113,8 +122,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         G_r = E_r/(2*(1+nu))                            # Module de cisaillement [Pa]
         r_rili = np.sqrt(Jx_r/A_r)                      # Rayon de giration [m]
         param = [A_r, r_rili, l, E_r, Iyz_r, Iyz_r, Jx_r, G_r, rho_r]
-        # print("rigid elment")
-        # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
+    
 
     else : 
       # Definition des caracteristiques pour une poutre secondaire (selon les axes locaux)
@@ -122,8 +130,7 @@ def get_param(elem, leg_elem, rili_elem, elements, nodes) :
         Jx_beam = Iyz_beam * 2                          # Moment quadratique selon l'axe x [m^4]
         r_beam = np.sqrt(Jx_beam/A_beam)               # Rayon de giration [m]
         param = [A_beam,r_beam, l, E, Iyz_beam, Iyz_beam, Jx_beam, G, rho]
-        # print("little_element")
-        # print("Aire :",param[0],"rayon :",param[1],"longeur element :",param[2],"Module de Young:",param[3],"Moment quadratique :",param[4],"Moment quadratique :",param[5],"moment d'inertie :",param[6])
+    
     return param
 
 def apply_constraints(M,K) :

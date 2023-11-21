@@ -36,7 +36,7 @@ def elem_matrix(beam_param) :
     m = (G*Jx)/h
     n = (2*E*Iz)/h
     o = (2*E*Iy)/h
-    # print("A :",A,"l :",h,"E :",E,"G :",G, "Jx :",Jx, "Iy :",Iy, "Iz :",Iz) 
+
     K_el = [[    f,     0,     0,     0,     0,     0,    -f,     0,     0,     0,     0,     0], 
             [    0,     g,     0,     0,     0,     i,     0,    -g,     0,     0,     0,     i],
             [    0,     0,     j,     0,    -k,     0,     0,     0,    -j,     0,    -k,     0], 
@@ -189,7 +189,7 @@ def damping_ratio(w,K,M) :
     """
     eps_1_2 = 0.005               
     a       = 2*eps_1_2/(w[0] + w[1])
-    b       = a* w[0] * w[1]
+    b       = a* w[0] * w[1]  
     C       = a * K + b * M
     eps     = 0.5*(a*w+b/w) 
     return eps, C
@@ -211,7 +211,8 @@ def force_p(M,dof_list,t) :
     F_max                = exit_masse*exit_vitesse*0.85 /exit_temps_impacte   #[N]  
     norm_F               = F_max *np.sin(2*np.pi*exit_frequence*t) 
     #force distrubué celon X et Y avec un angle de 45°
-    p                    = np.zeros((len(M),len(t)))
+    
+    p                         = np.zeros((len(M),len(t)))
     p[dof_list[17][0]-1 - 24] = - norm_F/np.sqrt(2)
     p[dof_list[17][1]-1 - 24] = norm_F/np.sqrt(2)
     

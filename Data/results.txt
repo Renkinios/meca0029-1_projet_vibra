@@ -1,0 +1,44 @@
+Natural frequency : 
+Mode0 :	 0.443736 [Hz] 
+Mode1 :	 0.450548 [Hz] 
+Mode2 :	 0.971027 [Hz] 
+Mode3 :	 6.934510 [Hz] 
+Mode4 :	 7.384347 [Hz] 
+Mode5 :	 15.85566 [Hz] 
+Mode6 :	 20.29465 [Hz] 
+Mode7 :	 21.96074 [Hz] 
+
+Natutal frequency of guyan-irons : 
+Mode0 :	0.443742 [Hz] 	Relative error : 0.0011772006070466818 [%] 
+Mode1 :	0.450559 [Hz] 	Relative error : 0.0024654584245163706 [%] 
+Mode2 :	0.971029 [Hz] 	Relative error : 0.00015207452506350866 [%] 
+Mode3 :	7.297395 [Hz] 	Relative error : 5.233027171822114 [%] 
+Mode4 :	7.610926 [Hz] 	Relative error : 3.0683611429679702 [%] 
+Mode5 :	15.91021 [Hz] 	Relative error : 0.34407875284475187 [%] 
+Mode6 :	143.3142 [Hz] 	Relative error : 606.1673906708589 [%] 
+Mode7 :	26173.00 [Hz] 	Relative error : 119080.82154143226 [%] 
+
+Natutal frequency of Craig-Bampton : 
+Mode0 :	 0.443742 [Hz] 	Relative error : 0.0011653895387544464 [%] 
+Mode1 :	 0.450559 [Hz] 	Relative error : 0.0024441416439362246 [%] 
+Mode2 :	 0.971027 [Hz] 	Relative error : 5.25258545524213e-06 [%] 
+Mode3 :	 6.942315 [Hz] 	Relative error : 0.11255542367241785 [%] 
+Mode4 :	 7.398744 [Hz] 	Relative error : 0.19496917815223608 [%] 
+Mode5 :	 15.87984 [Hz] 	Relative error : 0.15253485295961003 [%] 
+Mode6 :	 20.43642 [Hz] 	Relative error : 0.6985623152042032 [%] 
+Mode7 :	 22.04952 [Hz] 	Relative error : 0.40425559971892805 [%] 
+
+Masse total :294789.1393177786[kg] 
+
+Damping ratio :
+Mode0: 	0.005000000000000001 
+Mode1: 	0.005000000000000001 
+Mode2: 	0.006580213446495647 
+Mode3: 	0.038932434217165655 
+Mode4: 	0.04143768050937392 
+Mode5: 	0.08872039706518764 
+Mode6: 	0.11352363727046703 
+Mode7: 	0.12283469896062411 
+
+Time of application The Newmark Method: 2.9449236392974854 [s] 
+Time of application The Newark Method approcimate by Craig-Bampton0.0 [s] 

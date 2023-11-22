@@ -53,7 +53,7 @@ def plot_nodes(nodes, elements,fichier,leg_elem, rili_elem) :
     ax.zaxis.pane.set_edgecolor('w')
     ax.set_box_aspect([1, 1, 4])
     ax.grid(False)
-    plt.savefig(fichier,bbox_inches='tight',dpi=600,format='pdf')
+    plt.savefig(fichier,bbox_inches='tight',dpi=600)
     plt.close()
 def conv_nx() : 
     frequence = [

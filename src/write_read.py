@@ -55,3 +55,44 @@ def writing_nodes_element_file(nodes,elements, file_name):
         fichier.write("Number of elements :\n")
         for i in range(len(elements)):
             fichier.write("\t"+ str(i) + " : " + str(elements[i][0]) + " " + str(elements[i][1]) + "\n")
+def write_results(f,masse_totals,eps,temps_new,f_gi,t_gi,f_cg,t_cg,t_app_new):
+    """ Ecrit les resultats dans un fichier texte
+        Arguments : 
+            - f : liste des frequence naturelles
+            - masse_totals : masse total de la structure
+            - eps : liste des facteurs d'amortissement
+            - temps_new : temps de calcul de la methode de Newmark
+            - f_gi : liste des frequence naturelles de la methode de Guyan-Irons
+            - t_gi : temps de calcul de la methode de Guyan-Irons
+            - f_cg : liste des frequence naturelles de la methode de Craig-Bampton
+            - t_cg : temps de calcul de la methode de Craig-Bampton
+            - t_app_new : temps de calcul de la methode de Newmark approcimate par Craig-Bampton
+        Return : 
+            - Rien
+    """
+    with open('Data/results.txt', 'w') as fichier:
+        
+        fichier.write("Natural frequency : \n")
+        for i in range(len(f)):
+            fichier.write("Mode" + str(i) + " :\t " + str(round(f[i],8))[:8] + " [Hz] \n")
+        
+        fichier.write("\nNatutal frequency of guyan-irons : \n")
+        for i in range(len(f_gi)):
+            fichier.write("Mode" + str(i) + " :\t" + str(round(f_gi[i],8))[:8] + " [Hz] " + "\tRelative error : " + str(np.abs(f_gi[i]-f[i])/f[i]*100) + " [%] \n")
+        
+        fichier.write("\nNatutal frequency of Craig-Bampton : \n")
+        for i in range(len(f_cg)):
+            fichier.write("Mode" + str(i) + " :\t " + str(round(f_cg[i],8))[:8] + " [Hz] \t" + "Relative error : " + str(np.abs(f_cg[i]-f[i])/f[i]*100) + " [%] \n")
+
+        fichier.write("\nMasse total :" + str(masse_totals) + "[kg] \n")
+        
+        fichier.write("\nDamping ratio :\n")
+        for i in range(len(eps)):
+            fichier.write("Mode" + str(i) + ": \t" + str(eps[i]) + " \n")
+        fichier.write("\nTime of application The Newmark Method: " + str(temps_new) + " [s] \n")
+        fichier.write("Time of application The Newark Method approcimate by Craig-Bampton" + str(t_app_new) + " [s] \n")
+
+
+        
+
+

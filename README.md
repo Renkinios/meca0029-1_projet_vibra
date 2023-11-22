@@ -4,4 +4,4 @@
 
 ### Academic Year 2023 – 2024
 
-![Project Logo](images/logo_liege.png)
+![Project Logo](picture/logo_liege.png)  

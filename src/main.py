@@ -14,7 +14,7 @@ import timeit
 write_e_n       = False      # if you want to write the new nodes and element in a file and the answers
 actu_graph      = False      # if you want actualisée graph
 c_time          = False      # if you want to calcul the time of part of the programm
-nb_elem_by_leg  = 2          # number of element by leg
+nb_elem_by_leg  = 3          # number of element by leg
 nMode           = 8          # nombre de mode a calculer,nombre de mode inclus dans la superoposition modale max 8
 nodes, elements = write_read.read_data('Data/init_nodes.txt')
 #----------------------------------------------------- premiere partie --------------------------------------------------------------------
@@ -27,7 +27,7 @@ if write_e_n :
 if actu_graph :
     graphe.plot_nodes(nodes, elements, "picture/turbine.pdf",leg_elem,rili_elem)
     graphe.plot_nodes(nodes, elements, "picture/readme/turbine.png",leg_elem,rili_elem)
-graphe.plot_nodes(nodes, elements, "picture/nodes_2.pdf",leg_elem,rili_elem, True)
+
 
 # CREATION DE LA LISTE DES DEGRES DE LIBERTE
 dof_list = mtx.matrice_dof_list(nodes)
@@ -160,6 +160,6 @@ else :
 if actu_graph :
     graphe.comp_newR_new_R_ap(q,q_app,dof_list,t)
     graphe.comp_accurancy_time(q,Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt,p_t,C_t,t,dof_list)
-    graphe.comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,8,nMode,w)
+graphe.comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,8,nMode,w)
 
 write_read.write_results(w/(2*np.pi),masse_total,eps,t_mew_delta,w_gi/(2*np.pi),t_gi_delta,w_cb/(2*np.pi),t_cb_delta,delta_app_new,c_time)

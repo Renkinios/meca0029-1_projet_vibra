@@ -375,7 +375,7 @@ def conv_time_new(t,M,C,K,dof_list,rotor = False) :
     plt.close()
 
 def comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,Neigenmodes,nMode,w) :
-    plt.figure(figsize=((10,10)))
+    plt.figure(figsize=((8,7)))
     x = np.linspace(1,8,8)
     plt.scatter(x,w_gi/(2*np.pi),label="guyan_irons [Hz]",marker="*")
     plt.scatter(x,w/(2*np.pi),label="Exact frequency [Hz]",marker="x")
@@ -385,7 +385,7 @@ def comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,Neigenmodes,nMode,w) :
         K_cb, M_cb, Rcb  = mth.Craig_Bampton(Mcc,Kcc,Krr,Rgi,i,nMode,Kt,Mt)
         w_cb, x_cb  = fct.natural_frequency(M_cb, K_cb,nMode)
         plt.scatter(x,w_cb/(2*np.pi),label= lab + str(i) ,marker="o", facecolors='none',edgecolors=couleurs[i-1])
-    plt.ylim(bottom=0, top=400)
+    plt.ylim(bottom=0, top=250)
     plt.xlabel("Frequency number")
     plt.ylabel("Frequence [Hz]")
     plt.legend(loc="upper left")
@@ -441,7 +441,7 @@ def comp_accurancy_time(q,Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt,p_t,C_t,t,dof_
     X = np.linspace(1,8,8)
     couleurs = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
     lab = "Error relatif Mode"
-    plt.figure(figsize=((10,10)))
+    plt.figure(figsize=((8,7)))
     for i in range(Neigenmodes) :
         K_cb, M_cb, Rcb  = mth.Craig_Bampton(Mcc,Kcc,Krr,Rgi,i,nMode,Kt,Mt)
         if c_time :

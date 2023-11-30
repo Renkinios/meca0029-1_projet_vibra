@@ -182,3 +182,4 @@ def natural_frequency(M,K,nMode) :
     w              = np.real(np.sqrt(eigenvals))
 
     return w, x
+

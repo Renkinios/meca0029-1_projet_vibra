@@ -16,10 +16,10 @@ This repository contains the code and documentation for the MECA0029–1 Theory 
 
 ## Introduction
 
-This project is due to 3 part the first one we going to calculate the natural frequency and the mode shape of the jacket. The second part we going to calculate the response of the jacket with crew of  gang of killer whales. And finaly the last we going to try to reduce this methodes. 
+This project is made of 3 parts. In the first one, we are going to calculate the natural frequencies and the mode shape of the jacket. In the second part we are going to calculate the response of the jacket to the attack of a gang of killer whales. And finaly, in the last one we are going to try to reduce the model. 
 
 ## Usage
-The code is really simple to use, you just need to run the main.py file and the code will run automaticly. Like the code is really heavi we install somme parametere for going faster. So if you want to take in this acount just change the parameters
+The code is really simple to use, you just need to run the src/MECA0029_Group_8_1.py file and the code will run automaticaly. As the code is really heavy we use some parametere in order to go faster. You can change the parameters.
 
 ```bash
 write_e_n       = False      # if you want to write the new nodes and element in a file and the answers
@@ -28,10 +28,10 @@ c_time          = True       # if you want to calcul the time of part of the pro
 nb_elem_by_leg  = 3          #number of element by leg
 nMode           = 8          # nombre de mode a calculer,nombre de mode inclus dans la superoposition modale max 8
 ```	
-The code is base on node and element on the jacket list that you can find in data/init_nodes.txt, if you want to change the structure you need to change it. But be carefile beacausse the code is not really flexible. We fixe somme rigid element,some leg element and clamped nodes. That you can see in green and red in the graph.
+The code is based on the nodes and elements of the jacket list that you can find in data/init_nodes.txt, If you want to change the structure you need to change it. But be careful beacause the code is not really flexible. We fixe somme rigid element, some leg element and clamped nodes. You can see these in green and red on the graph.
 
 ![Turbine](picture/readme/turbine.png)  
 
 ## Results
 
-The result going to be show in the terminal and in the graph. The graph is going to be save in the folder picture The result is going to be save in the folder data/result.
+The result are going to be shown in the terminal and on the graphs. The graphs are going to be saved in the folder picture and the results are going to be saved in the folder data/results.

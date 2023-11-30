@@ -1,32 +1,42 @@
 import numpy as np
 from scipy import linalg
-import functions as fct
-import graphe as graphe
-import write_read as write_read
-import methode as mth
-import matrice as mtx
+import MECA0029_Group_8_2 as fct
+import MECA0029_Group_8_6 as MECA0029_Group_8_6
+import MECA0029_Group_8_5 as MECA0029_Group_8_5
+import MECA0029_Group_8_4 as mth
+import MECA0029_Group_8_3 as mtx
 import time
 import timeit
 
-# VISUALISATION DE LA STRUCTURE INITIALE
-# si veux actualisé les graphes mettre true 
+# FILES 
+
+# MECA0029_Group_8_1.py = main file
+# MECA0029_Group_8_2.py = basic functions
+# MECA0029_Group_8_3.py = functions related to the construction of the matrices
+# MECA0029_Group_8_4.py = functions related to the resolution of the EDO and the recution of the model
+# MECA0029_Group_8_5.py = functions to read the data and write the results
+# MECA0029_Group_8_6.py = functions related to the creation of the graphs
+
+
+
+# PARAMATRISATION
 
 write_e_n       = False      # if you want to write the new nodes and element in a file and the answers
-actu_graph      = False      # if you want actualisée graph
-c_time          = False      # if you want to calcul the time of part of the programm
+actu_graph      = True      # if you want to update the graphs
+c_time          = False      # if you want to calculate the time of part of the programm
 nb_elem_by_leg  = 3          # number of element by leg
 nMode           = 8          # nombre de mode a calculer,nombre de mode inclus dans la superoposition modale max 8
-nodes, elements = write_read.read_data('Data/init_nodes.txt')
+nodes, elements = MECA0029_Group_8_5.read_data('Data/init_nodes.txt')
 #----------------------------------------------------- premiere partie --------------------------------------------------------------------
 
 # MODIFICATION DU NOMBRE D'ELEMENTS, CREATION DES LISTES INITIALES DE CATEGORIE
 
 nodes,elements, leg_elem, rili_elem = fct.new_nodes(nodes, elements,nb_elem_by_leg) 
 if write_e_n :
-    write_read.writing_nodes_element_file(nodes, elements, 'Data/nodes_test.txt')
+    MECA0029_Group_8_5.writing_nodes_element_file(nodes, elements, 'Data/new_nodes.txt')
 if actu_graph :
-    graphe.plot_nodes(nodes, elements, "picture/turbine.pdf",leg_elem,rili_elem)
-    graphe.plot_nodes(nodes, elements, "picture/readme/turbine.png",leg_elem,rili_elem)
+    MECA0029_Group_8_6.plot_nodes(nodes, elements, "picture/turbine.pdf",leg_elem,rili_elem)
+    # MECA0029_Group_8_6.plot_nodes(nodes, elements, "picture/readme/turbine.png",leg_elem,rili_elem)
 
 
 # CREATION DE LA LISTE DES DEGRES DE LIBERTE
@@ -68,9 +78,9 @@ w,x = fct.natural_frequency(M, K,nMode)
 # graphe des modes de vibration deformation on rajoute les contraintes
 
 if actu_graph :
-    graphe.conv_nat_freq()
-    graphe.deformotion_frequence_propre(x,8,nodes,elements)
-    graphe.conv_nat_freq()
+    MECA0029_Group_8_6.conv_nat_freq()
+    MECA0029_Group_8_6.deformotion_frequence_propre(x,8,nodes,elements)
+    MECA0029_Group_8_6.conv_nat_freq()
 
 
 # ----------------------------------------------------- deuxieme partie --------------------------------------------------------------------
@@ -93,25 +103,25 @@ else :
     t_mew_delta = None
 
 if actu_graph :
-    graphe.plot_q_deplacement(q, dof_list,t, "picture/q_newmark")
-    graphe.conv_time_new(t,M,C,K,dof_list,True)    
-    graphe.conv_time_new(t,M,C,K,dof_list,False)
-    graphe.fft_new_R(q,t,dof_list)
-    graphe.conv_time_new(t,M,C,K,dof_list,True)    
-    graphe.conv_time_new(t,M,C,K,dof_list,False)
+    MECA0029_Group_8_6.plot_q_deplacement(q, dof_list,t, "picture/q_newmark")
+    MECA0029_Group_8_6.conv_time_new(t,M,C,K,dof_list,True)    
+    MECA0029_Group_8_6.conv_time_new(t,M,C,K,dof_list,False)
+    MECA0029_Group_8_6.fft_new_R(q,t,dof_list)
+    MECA0029_Group_8_6.conv_time_new(t,M,C,K,dof_list,True)    
+    MECA0029_Group_8_6.conv_time_new(t,M,C,K,dof_list,False)
 #q_deplacement, q_acceleration
 q_deplacement, q_acc = mth.methode_superposition(M,K,w,x,eps,p,t,nMode)
 
 if actu_graph :
     nGraphe = 9
-    graphe.plot_q_deplacement(q_deplacement, dof_list,t, "picture/q_deplacement")
-    graphe.plot_q_deplacement(q_acc, dof_list,t, "picture/q_acc")
-    graphe.comp_depl_acc_newR(q_deplacement,q_acc,q,t,dof_list)
+    MECA0029_Group_8_6.plot_q_deplacement(q_deplacement, dof_list,t, "picture/q_displacement")
+    MECA0029_Group_8_6.plot_q_deplacement(q_acc, dof_list,t, "picture/q_acceleration")
+    MECA0029_Group_8_6.comp_depl_acc_newR(q_deplacement,q_acc,q,t,dof_list)
     nGraphe = 9
-    graphe.conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nGraphe,True)
-    graphe.conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nGraphe,True)
-    graphe.conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nGraphe,False)
-    graphe.conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nGraphe,False)
+    MECA0029_Group_8_6.conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nGraphe,True)
+    MECA0029_Group_8_6.conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nGraphe,True)
+    MECA0029_Group_8_6.conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nGraphe,False)
+    MECA0029_Group_8_6.conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nGraphe,False)
 
 # ----------------------------------------------------- troisieme partie --------------------------------------------------------------------
 # method de guyan irons
@@ -158,8 +168,8 @@ else :
     delta_app_new = None
 
 if actu_graph :
-    graphe.comp_newR_new_R_ap(q,q_app,dof_list,t)
-    graphe.comp_accurancy_time(q,Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt,p_t,C_t,t,dof_list)
-graphe.comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,8,nMode,w)
+    MECA0029_Group_8_6.comp_newR_new_R_ap(q,q_app,dof_list,t)
+    MECA0029_Group_8_6.comp_accurancy_time(q,Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt,p_t,C_t,t,dof_list)
+MECA0029_Group_8_6.comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,8,nMode,w)
 
-write_read.write_results(w/(2*np.pi),masse_total,eps,t_mew_delta,w_gi/(2*np.pi),t_gi_delta,w_cb/(2*np.pi),t_cb_delta,delta_app_new,c_time)
+MECA0029_Group_8_5.write_results(w/(2*np.pi),masse_total,eps,t_mew_delta,w_gi/(2*np.pi),t_gi_delta,w_cb/(2*np.pi),t_cb_delta,delta_app_new,c_time)

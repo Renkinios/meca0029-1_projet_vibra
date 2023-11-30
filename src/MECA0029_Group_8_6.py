@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
-import functions         as fct
+import MECA0029_Group_8_2         as fct
 import numpy             as np
-import write_read        as write_read
-import methode           as mth
-import matrice           as mtx
+import MECA0029_Group_8_5        as MECA0029_Group_8_5
+import MECA0029_Group_8_4           as mth
+import MECA0029_Group_8_3           as mtx
 import time
 import timeit
 from mpl_toolkits.mplot3d import Axes3D
@@ -93,17 +93,17 @@ def conv_nat_freq() :
 
     plt.figure(figsize=((15,5)))
     plt.plot(X,rel_er_nx)
-    plt.xlabel("number of elements per beam")
-    plt.ylabel("relative error")
+    plt.xlabel("Number of Elements per Beam")
+    plt.ylabel("Eelative Error")
     plt.xticks([1,2,3,4])
-    plt.savefig("picture/conv_nx.pdf", bbox_inches="tight", dpi=600) 
+    plt.savefig("picture/convergence_nx.pdf", bbox_inches="tight", dpi=600) 
     plt.close()
     plt.figure(figsize=((15,5)))
     plt.plot(X_py,rel_er_py)
-    plt.xlabel("number of elements per beam")
-    plt.ylabel("relative error")
+    plt.xlabel("Number of Elements per Beam")
+    plt.ylabel("Relative Error")
     plt.xticks([1,2,3,4,5,6]) 
-    plt.savefig("picture/conv_py.pdf", bbox_inches="tight", dpi=600)
+    plt.savefig("picture/convergence_py.pdf", bbox_inches="tight", dpi=600)
 def plot_q_deplacement(q_deplacement,dof_list,t,titre) :
     """
     Plot les déplacements en fonction du temps
@@ -124,13 +124,13 @@ def plot_q_deplacement(q_deplacement,dof_list,t,titre) :
     fig_1 = plt.figure(figsize=((15,5)))
     plt.plot(t,dir_force_rot*1000)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     titre_rot= titre + ".pdf"
     plt.savefig(titre_rot, bbox_inches="tight", dpi=600)
     fig_2 = plt.figure(figsize=((15,5)))
     plt.plot(t,direction_force*1000)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     titre_force = titre + "_f.pdf"
     plt.savefig(titre_force, bbox_inches="tight", dpi=600)
     plt.close()
@@ -149,7 +149,7 @@ def deformotion_frequence_propre(X,nMode,nodes,elements) :
     for mode in range(nMode) :
         matrix_def = np.copy(X)
         matrix_def = matrix_def[:,mode]
-        titre = "picture/py_def_mode_" +  str(mode+1) + ".pdf"
+        titre = "picture/py_mode_shapes" +  str(mode+1) + ".pdf"
         fig = plt.figure(figsize=((15,8))) 
         ax  = fig.add_subplot(111, projection='3d')
         for j in elements : 
@@ -217,7 +217,7 @@ def comp_newR_new_R_ap(q,q_ap,dof_list,t) :
     plt.plot(t,dir_force_rot*1000,label="Exact",linestyle='--',color="red")
     plt.plot(t,dir_force_rot_ap*1000,label="Approximation",alpha=0.7)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig("picture/ap_newR_rot.pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -226,7 +226,7 @@ def comp_newR_new_R_ap(q,q_ap,dof_list,t) :
     plt.plot(t,direction_force*1000,label="Exact",linestyle='--',color="red")
     plt.plot(t,direction_force_ap*1000,label="Approximation",alpha=0.7)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig("picture/ap_newR_force.pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -247,21 +247,21 @@ def comp_depl_acc_newR(q_new,q_dep,q_acc,t,dof_list):
     dir_f_new = (- q_new[index_direction_force] + q_new[index_direction_force+1])/np.sqrt(2) 
     dir_r_new = (- q_new[index_rot] + q_new[index_rot+1])/np.sqrt(2) 
     fig_1 = plt.figure(figsize=((15,5)))
-    plt.plot(t,dir_f_dep*1000,label="Deplacement",linestyle='--',color="red")
-    plt.plot(t,dir_f_acc*1000,label="Acceleration",alpha=0.7)
-    plt.plot(t,dir_f_new*1000,label="Newmark",alpha=0.5)
+    plt.plot(t,dir_f_dep*1000,label="Displacement Method",linestyle='--',color="red")
+    plt.plot(t,dir_f_acc*1000,label="Acceleration Method",alpha=0.7)
+    plt.plot(t,dir_f_new*1000,label="Newmark Method",alpha=0.5)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig("picture/comp_depl_acc_newR_force.pdf", bbox_inches="tight", dpi=600)
     plt.close()
 
     fig_2 = plt.figure(figsize=((15,5)))
-    plt.plot(t,dir_r_dep*1000,label="Deplacement",linestyle='--',color="red",alpha=0.7)
+    plt.plot(t,dir_r_dep*1000,label="Displacement",linestyle='--',color="red",alpha=0.7)
     plt.plot(t,dir_r_acc*1000,label="Acceleration",linestyle = ':' )
     plt.plot(t,dir_r_new*1000,label="Newmark",alpha=0.5)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig("picture/comp_depl_acc_newR_rot.pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -298,7 +298,7 @@ def conp_Mode_dep(M,K,w,x,eps,p,t,dof_list,nMode=8,rotor=False,c_time=False) :
             plt.plot(t,dir_f_dep*1000,label="Mode "+ str(i))
     print("time_comp_dep = ",time_comp)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig(titre +".pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -335,7 +335,7 @@ def conp_Mode_acc(M,K,w,x,eps,p,t,dof_list,nMode=8,rotor=False, c_time=False) :
             plt.plot(t,dir_f_dep*1000,label="Mode "+ str(i))
     print("time_comp_acc = ",time_comp)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig(titre +".pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -369,7 +369,7 @@ def conv_time_new(t,M,C,K,dof_list,rotor = False) :
             plt.plot(t,dir_f_dep*1000,label="Delta "+ str(10/i) + "[s]")
     print("time_comp_new = ",time_comp)
     plt.xlabel("Time [s]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.legend(loc="upper right")
     plt.savefig(titre +".pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -377,7 +377,7 @@ def conv_time_new(t,M,C,K,dof_list,rotor = False) :
 def comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,Neigenmodes,nMode,w) :
     plt.figure(figsize=((8,7)))
     x = np.linspace(1,8,8)
-    plt.scatter(x,w_gi/(2*np.pi),label="guyan_irons [Hz]",marker="*")
+    plt.scatter(x,w_gi/(2*np.pi),label="Guyan_Irons [Hz]",marker="*")
     plt.scatter(x,w/(2*np.pi),label="Exact frequency [Hz]",marker="x")
     lab = "Craig_Bampton Mode"
     couleurs = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']
@@ -386,8 +386,8 @@ def comp_Craig_guyan(Mcc,Kcc,Krr,Rgi,Kt,Mt,w_gi,Neigenmodes,nMode,w) :
         w_cb, x_cb  = fct.natural_frequency(M_cb, K_cb,nMode)
         plt.scatter(x,w_cb/(2*np.pi),label= lab + str(i) ,marker="o", facecolors='none',edgecolors=couleurs[i-1])
     plt.ylim(bottom=0, top=250)
-    plt.xlabel("Frequency number")
-    plt.ylabel("Frequence [Hz]")
+    plt.xlabel("Frequency Number")
+    plt.ylabel("Frequency [Hz]")
     plt.legend(loc="upper left")
     plt.savefig("picture/comp_f_Craig_guyan.pdf", bbox_inches="tight", dpi=600)
     plt.close()
@@ -419,7 +419,7 @@ def fft_new_R(q_new,t,dof_list) :
     plt.xticks([0.4,1,7,10,15,20,25])
 
     plt.xlabel("Frequency [Hz]")
-    plt.ylabel("Desplacement [mm]")
+    plt.ylabel("Displacement [mm]")
     plt.savefig("picture/fft_newR_force.pdf", bbox_inches="tight", dpi=600)
     plt.close()
 
@@ -455,7 +455,7 @@ def comp_accurancy_time(q,Mcc,Kcc,Krr,Rgi,Neigenmodes,nMode,Kt,Mt,p_t,C_t,t,dof_
         plt.scatter(X,error_m,label= lab + str(i) ,marker="o", color=couleurs[i])
     plt.axhline(y=2, color='r', linestyle='--', label='Ligne constante')
     plt.xlabel("Frequency number")
-    plt.ylabel("Relative error [%]")
+    plt.ylabel("Relative Error [%]")
     plt.legend(loc="upper left")
     plt.ylim(0,5)
     plt.savefig("picture/comp_error.pdf", bbox_inches="tight", dpi=600)

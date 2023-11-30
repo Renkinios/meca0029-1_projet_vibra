@@ -60,9 +60,9 @@ def matrice_locel(elements,dof_list) :
         Return :
             locel : matrice locel
     """
+    # you have you elment two nodes --> creatr 
     locel = np.zeros((len(elements), 12))
     for i in range(len(elements)) :   
-        # locel[i][:] = [dof_list[elements[i][0]], dof_list[elements[i][1]]]
         locel[i][:] = [dof_list[elements[i][0]][0], dof_list[elements[i][0]][1], 
                     dof_list[elements[i][0]][2], dof_list[elements[i][0]][3], 
                     dof_list[elements[i][0]][4], dof_list[elements[i][0]][5],
@@ -85,9 +85,8 @@ def matrice_dof_list(nodes) :
         dof_elem = [count, count+1, count+2, count+3, count+4, count+5]
         dof_list.append(dof_elem)
         count+=6
-
     return dof_list
-def matrice_rotasion(nodes,elements,e) :
+def  matrice_rotasion(nodes,elements,e) :
     """
     Crée la matrice de rotation
         Arguments : 

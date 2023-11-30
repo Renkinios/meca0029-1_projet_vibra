@@ -55,7 +55,7 @@ def writing_nodes_element_file(nodes,elements, file_name):
         fichier.write("Number of elements :\n")
         for i in range(len(elements)):
             fichier.write("\t"+ str(i) + " : " + str(elements[i][0]) + " " + str(elements[i][1]) + "\n")
-def write_results(f,masse_totals,eps,temps_new,f_gi,t_gi,f_cg,t_cg,t_app_new):
+def write_results(f,masse_totals,eps,temps_new,f_gi,t_gi,f_cg,t_cg,t_app_new,c_time):
     """ Ecrit les resultats dans un fichier texte
         Arguments : 
             - f : liste des frequence naturelles
@@ -67,6 +67,7 @@ def write_results(f,masse_totals,eps,temps_new,f_gi,t_gi,f_cg,t_cg,t_app_new):
             - f_cg : liste des frequence naturelles de la methode de Craig-Bampton
             - t_cg : temps de calcul de la methode de Craig-Bampton
             - t_app_new : temps de calcul de la methode de Newmark approcimate par Craig-Bampton
+            - c_time : si on veux ecrire le temps 
         Return : 
             - Rien
     """
@@ -89,10 +90,8 @@ def write_results(f,masse_totals,eps,temps_new,f_gi,t_gi,f_cg,t_cg,t_app_new):
         fichier.write("\nDamping ratio :\n")
         for i in range(len(eps)):
             fichier.write("Mode" + str(i) + ": \t" + str(eps[i]) + " \n")
-        fichier.write("\nTime of application The Newmark Method: " + str(temps_new) + " [s] \n")
-        fichier.write("Time of application The Newark Method approcimate by Craig-Bampton" + str(t_app_new) + " [s] \n")
-
-
-        
-
-
+        if c_time : 
+            fichier.write("\nTime of application The Newmark Method: " + str(round(temps_new,4)) + " [s] \n")
+            fichier.write("Time of application The Newark Method approcimate by Craig-Bampton: " + str(t_app_new) + " [s] \n")
+            fichier.write("Time of application The Guyan-Irons Method: " + str(round(t_gi,4)) + " [s] \n")
+            fichier.write("Time of application The Craig-Bampton Method: " + str(round(t_cg,4)) + " [s] \n")

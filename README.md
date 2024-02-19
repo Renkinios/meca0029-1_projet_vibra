@@ -6,7 +6,7 @@
 
 ![Project Logo](picture/readme/logo_liege.png)  
 
-This repository contains the code and documentation for the MECA0029–1 Theory of Vibration project for the academic year 2023–2024. The project focuses on the analysis of the dynamic behavior of an offshore wind turbine jacket.
+This repository contains the code and documentation for the MECA0029–1 Theory of Vibration project for the academic year 2023–2024. The project focuses on the analysis of the dynamic behavior of an offshore wind turbine jacket. Resultat projet : 16/20 --> liens overleaf https://www.overleaf.com/read/vbgktrymyhwt#dfe4e2
 
 ## Table of Contents
 

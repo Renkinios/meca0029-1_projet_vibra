@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
-import MECA0029_Group_8_2         as fct
+import initialization         as fct
 import numpy             as np
-import MECA0029_Group_8_5        as MECA0029_Group_8_5
-import MECA0029_Group_8_4           as mth
-import MECA0029_Group_8_3           as mtx
+import read_write        as read_write
+import deplacement_method           as mth
+import element_matrix           as mtx
 import time
 import timeit
 from mpl_toolkits.mplot3d import Axes3D

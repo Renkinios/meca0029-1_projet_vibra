@@ -1,5 +1,5 @@
 import numpy as np
-import MECA0029_Group_8_2 as fct
+import initialization as fct
 def methode_superposition(M,K,w,x,eps,p,t,nMode):
     """ Cree les modes de deplasament par rapport a la methode de superposition, utilisation
     d'une fonction pour regarder plus facilement la convergence de celle-ci par rapport a nMode

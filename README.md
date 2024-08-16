@@ -4,8 +4,6 @@
 
 ### Academic Year 2023 – 2024
 
-![Project Logo](picture/readme/logo_liege.png)  
-
 This repository contains the code and documentation for the MECA0029–1 Theory of Vibration project for the academic year 2023–2024. The project focuses on the analysis of the dynamic behavior of an offshore wind turbine jacket. Resultat projet : 16/20 --> liens overleaf https://www.overleaf.com/read/vbgktrymyhwt#dfe4e2
 
 ## Table of Contents
@@ -19,7 +17,7 @@ This repository contains the code and documentation for the MECA0029–1 Theory 
 This project is made of 3 parts. In the first one, we are going to calculate the natural frequencies and the mode shape of the jacket. In the second part we are going to calculate the response of the jacket to the attack of a gang of killer whales. And finaly, in the last one we are going to try to reduce the model. 
 
 ## Usage
-The code is really simple to use, you just need to run the src/MECA0029_Group_8_1.py file and the code will run automaticaly. As the code is really heavy we use some parametere in order to go faster. You can change the parameters.
+The code is really simple to use, you just need to run the src/main.py file and the code will run automaticaly. As the code is really heavy we use some parametere in order to go faster. You can change the parameters.
 
 ```bash
 write_e_n       = False      # if you want to write the new nodes and element in a file and the answers

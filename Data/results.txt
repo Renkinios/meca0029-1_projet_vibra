@@ -1,41 +1,41 @@
 Natural frequency : 
-Mode0 :	 0.443740 [Hz] 
+Mode0 :	 0.443738 [Hz] 
 Mode1 :	 0.450548 [Hz] 
 Mode2 :	 0.971027 [Hz] 
-Mode3 :	 6.934490 [Hz] 
-Mode4 :	 7.384401 [Hz] 
-Mode5 :	 15.85569 [Hz] 
-Mode6 :	 20.29466 [Hz] 
+Mode3 :	 6.934489 [Hz] 
+Mode4 :	 7.384378 [Hz] 
+Mode5 :	 15.85567 [Hz] 
+Mode6 :	 20.29465 [Hz] 
 Mode7 :	 21.96074 [Hz] 
 
 Natutal frequency of guyan-irons : 
-Mode0 :	0.443742 [Hz] 	Relative error : 0.0004014890740554158 [%] 
-Mode1 :	0.450557 [Hz] 	Relative error : 0.0018800742097342628 [%] 
-Mode2 :	0.971028 [Hz] 	Relative error : 0.0001227161058302609 [%] 
-Mode3 :	7.297363 [Hz] 	Relative error : 5.23286839456716 [%] 
-Mode4 :	7.610924 [Hz] 	Relative error : 3.0675875578266374 [%] 
-Mode5 :	15.91021 [Hz] 	Relative error : 0.34382736254060714 [%] 
-Mode6 :	143.3142 [Hz] 	Relative error : 606.1671329952944 [%] 
-Mode7 :	26173.00 [Hz] 	Relative error : 119080.82705536783 [%] 
+Mode0 :	0.443741 [Hz] 	Relative error : 0.0006997909141955299 [%] 
+Mode1 :	0.450559 [Hz] 	Relative error : 0.0024975863778297783 [%] 
+Mode2 :	0.971028 [Hz] 	Relative error : 9.285606518292235e-05 [%] 
+Mode3 :	7.297399 [Hz] 	Relative error : 5.233399836122376 [%] 
+Mode4 :	7.610923 [Hz] 	Relative error : 3.0679027164189785 [%] 
+Mode5 :	15.91021 [Hz] 	Relative error : 0.34396732014903875 [%] 
+Mode6 :	143.3142 [Hz] 	Relative error : 606.1672280831 [%] 
+Mode7 :	26173.00 [Hz] 	Relative error : 119080.84127293689 [%] 
 
 Natutal frequency of Craig-Bampton : 
-Mode0 :	 0.443741 [Hz] 	Relative error : 0.000389854071531095 [%] 
-Mode1 :	 0.450557 [Hz] 	Relative error : 0.001858206596480573 [%] 
-Mode2 :	 0.971027 [Hz] 	Relative error : 3.457506846298583e-05 [%] 
-Mode3 :	 6.942288 [Hz] 	Relative error : 0.11245778180138846 [%] 
-Mode4 :	 7.398743 [Hz] 	Relative error : 0.19421819905993928 [%] 
-Mode5 :	 15.87984 [Hz] 	Relative error : 0.15228396744295317 [%] 
-Mode6 :	 20.43642 [Hz] 	Relative error : 0.6985263328228054 [%] 
-Mode7 :	 22.04952 [Hz] 	Relative error : 0.4042601740032574 [%] 
+Mode0 :	 0.443741 [Hz] 	Relative error : 0.0006877892908438882 [%] 
+Mode1 :	 0.450559 [Hz] 	Relative error : 0.0024747952821906143 [%] 
+Mode2 :	 0.971027 [Hz] 	Relative error : 6.437592942513154e-05 [%] 
+Mode3 :	 6.942319 [Hz] 	Relative error : 0.11290357373569025 [%] 
+Mode4 :	 7.398742 [Hz] 	Relative error : 0.19452526409937998 [%] 
+Mode5 :	 15.87984 [Hz] 	Relative error : 0.15242369715003956 [%] 
+Mode6 :	 20.43642 [Hz] 	Relative error : 0.6985382374943929 [%] 
+Mode7 :	 22.04952 [Hz] 	Relative error : 0.4042720645973056 [%] 
 
 Masse total :294789.1393177786[kg] 
 
 Damping ratio :
-Mode0: 	0.005 
+Mode0: 	0.004999999999999999 
 Mode1: 	0.004999999999999999 
-Mode2: 	0.0065801952097057515 
-Mode3: 	0.03893216352231205 
-Mode4: 	0.041437809741957286 
-Mode5: 	0.08872024594471804 
-Mode6: 	0.1135232057063593 
-Mode7: 	0.1228341819971554 
+Mode2: 	0.00658020385700325 
+Mode3: 	0.038932223874255906 
+Mode4: 	0.04143774783624817 
+Mode5: 	0.08872027638984299 
+Mode6: 	0.11352337873038124 
+Mode7: 	0.1228343702060566 
